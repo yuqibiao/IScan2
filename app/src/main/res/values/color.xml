@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_red">#ffff0000</color>
+    <color name="color_blue">#ff0000ff</color>
+    <color name="color_gray">#ffd8d8d8</color>
+    <color name="color_black">#ff000000</color>
+
+    <!-- My Own Modification -->
+    <color name ="background_blue">#2196F3</color>
+    <color name ="background_brown">#795548</color>
+    <color name ="text_white">#FFFFFF</color>
+    <color name ="text_blue">#1A237E</color>
+    <color name ="button_blue">#3F51B5</color>
+    <color name="transparent">#00000000</color>
+    <color name="actionbar_blue">#1A237E</color>
+    <color name="text_grey">#9E9E9E</color>
+</resources>

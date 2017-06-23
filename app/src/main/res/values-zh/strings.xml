@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="action_db_add">Add new item</string>
+    <string name="action_db_refresh">Refresh List</string>
+    <string name="action_discover">Finde New Scanner</string>
+    <string name="action_inven_start">Inventory start</string>
+    <string name="action_inven_stop">Inventory stop</string>
+    <string name="action_inven_clear">Inventory clear</string>
+    <string name="action_save">Save</string>
+    <string name="action_write">Write</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <string name="device_name">Scanner Serial Number</string>
+    <string name="device_mac">Scanner B/T Mac Address</string>
+    <string name="device_search">Search new RFID Scanner</string>
+    <string name="default_item_category">Unregistered</string>
+    <string name="default_item_count">1</string>
+    <string name="setting_device_id">-</string>
+    <string name="setting_device_mac">B/T mac</string>
+    <string name="value_device_mac">00:00:00:00:00:00</string>
+    <string name="setting_battery">Scanner battery level</string>
+    <string name="value_battery">100%</string>
+    <string name="setting_volume">Scanner volume</string>
+    <string name="volume_prompt">Set Volume</string>
+    <string-array name="volume_array">
+        <item>Vibration</item>
+        <item>Mute</item>
+        <item>Low</item>
+        <item>Normal</item>
+        <item>High</item>
+    </string-array>
+    <string-array name="table_array">
+        <item>Category</item>
+        <item>Item</item>
+    </string-array>
+    <string name="setting_report">Report only new tag</string>
+    <string name="setting_continuous">Continuous read</string>
+    <string name="setting_menu_button">Menu enable</string>
+    <string name="setting_epc_size">Epc Size</string>
+    <string name="setting_bt_filter_size">Filter Size</string>
+    <string name="setting_rfpower">RFID Power level</string>
+    <string name="setting_threashold">Finding threashold</string>
+    <string name="setting_downunit">Reduction unit</string>
+    <string-array name="rfpower_array">
+        <item>30</item>
+        <item>27</item>
+        <item>24</item>
+        <item>21</item>
+        <item>18</item>
+        <item>15</item>
+        <item>12</item>
+        <item>9</item>
+        <item>6</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="bank_array">
+        <item>RESERVED</item>
+        <item>EPC</item>
+        <item>TID</item>
+        <item>USER</item>
+    </string-array>
+        <string-array name="type_array">
+        <item>CHAR</item>
+        <item>HEX</item>
+    </string-array>
+    <string name="item_total_count">Item count:</string>
+    <string name="str_clear_count">Clear scanned item list</string>
+    <string name="str_find_tag">Find Tag List</string>
+    <string name="str_insert_data_hint">Input Your Data</string>
+    <string name="btn_insert_data">Add</string>
+    <string name="hint_new_category">Type new category name</string>
+    <string name="str_item_category">Category</string>
+    <string name="str_item_name">Name&#160;&#160;&#160;&#160;&#160;</string>
+    <string name="str_item_count">Count&#160;&#160;&#160;</string>
+    <string name="str_item_uid">UID</string>
+    <string name="str_item_epc">EPC</string>
+    <string name="hint_item_name">Edit item name</string>
+    <string name="hint_item_count">Edit unit count</string>
+    <string name="hint_item_uid">Edit or Scan unit UID</string>
+    <string name="hint_item_input_uid">Please enter the value</string>
+    
+    <string name="search_mode_title">Mode</string>
+    <string name="bt_apply_title">INVENTORY NORMAL</string>
+    <string name="bt_save_title">SAVE</string>
+    <string name="bt_write_title">WRITE</string>
+    
+     <string name="inventory_normal">INVENTORY NORMAL</string>
+     <string name="search_single">SEARCH_SINGLE</string>
+     <string name="search_multi">SEARCH_MULTI</string>
+     <string name="search_wildcard">SEARCH_WILDCARD</string>
+     <string name="title_write_value">Write Value</string>
+     <string name="title_pc_value">PC</string>
+     <string name="title_result_value">Result Value</string>
+     <string name="title_bank">Bank&#160;&#160;&#160;</string>
+     <string name="title_offset">Offset</string>
+     <string name="title_length">Length</string>
+     <string name="title_power">Power&#160;</string>
+     <string name="title_data_length">Data Length</string>
+     <string name="title_auto_increase">Auto&#160;Increase</string>
+     <string name="title_encode_type">Type</string>
+     
+     <string name="title_location_lat">Lat.</string>
+     <string name="title_location_long">Lng.</string>
+     <string name="title_location_curr_lat">Curr. Lat.</string>
+     <string name="title_location_curr_long">Curr. Lng.</string>
+     <string name="title_location_tag_id">Tag ID</string>
+     
+     <string name="fragment_title_comment">Please select first view.</string>
+     <string name="fragment_title_scanner_list">Scanner List</string>
+     <string name="fragment_title_scanner_setting">Scanner Setting</string>
+     <string name="fragment_title_item_inventory">Item Inventory</string>
+     <string name="fragment_title_item_management">Item Management</string>
+     <string name="fragment_title_sensor_tag">Sensor Tag</string>
+     <string name="fragment_title_tag_list_search">Tag List Search</string>
+     <string name="fragment_title_tag_write">Tag Write</string>
+     <string name="fragment_title_fragment_setting">Fragment Setting</string>
+     
+     <string name="sub_top_title_user">User Search</string>
+     <string name="sub_top_title_find">Search</string>
+     <string name="sub_top_title_multi_find">Search</string>
+     <string name="sub_top_title_mode">Nomal Inventory</string>
+     <string name="sub_top_title_save">Save</string>
+
+    <string name="memory_access_title" >Read / Write / Select</string>
+    <string name="memory_lock_title" >Lock Data</string>
+    <string name="memory_bank" >Memory Bank</string>
+    <string name="memory_offset" >Offset</string>
+    <string name="memory_length" >Length</string>
+    <string name="memory_read_data" >UID</string>
+    <string name="memory_write_data" >Data</string>
+    <string name="memory_result_data" >Result</string>
+    <string name="memory_killpwd" >Kill</string>
+    <string name="memory_accpwd" >Access</string>
+    <string name="memory_epc" >EPC</string>
+    <string name="memory_tid" >TID</string>
+    <string name="memory_user" >USER</string>
+    <string name="memory_epc_length" >Epc Length</string>
+    <string name="memory_clear_button" >Clear</string>
+    <string name="memory_read_button" >Read</string>
+    <string name="memory_write_button" >Write</string>
+    <string name="memory_select_button" >Select</string>
+    <string name="memory_lock_button" >Lock</string>
+    <string name="memory_epc_length_button" >Length Set</string>
+
+    <string name="logging_mode" >Logging mode</string>
+    <string name="logging_period" >Logging period</string>
+    <string name="log_data_reset" >Log data reset</string>
+    <string name="log_operation" >Log operation</string>
+    <string name="Alarm_mode_details" >Alarm mode details</string>
+    <string name="high_threshold_temperature" >High threshold temperature</string>
+    <string name="low_threshold_temperature" >Low threshold temperature</string>
+    <string name="over_threshold_count" >Over threshold count</string>
+    <string name="apply" >Apply</string>
+    <string name="cancel" >Cancel</string>
+    <string name="epc_filter" >Epc Filter</string>
+    <string name="Language" >Language</string>
+    <string name="read_temperature" >Read temperature</string>
+    <string name="temperature_log_clear" >Temperature Log clear</string>
+    <string name="temperature_log" >Temperature Log</string>
+
+    <string name ="item">ITEM</string>
+
+    <!-- My own modification -->
+    <string name="app_name">爱拍得</string>
+    <string name="company_name">公  司: </string>
+    <string name="user_name">用户名: </string>
+    <string name="password">密  码: </string>
+    <string name="login">登  录</string>
+    <string name="logging">正在登录...</string>
+    <string name="init">初始化</string>
+    <string name="homepage">首  页</string>
+    <string name="search">查  询</string>
+    <string name="settings">设  置</string>
+    <string name="linen_list">布  草</string>
+    <string name="scanner_list">手持机</string>
+    <string name="company_does_not_exist">查询不到该公司！</string>
+    <string name="invalid_company">公司不能为空！</string>
+    <string name="invalid_username">用户名不能为空！</string>
+    <string name="invalid_password">密码不能为空！</string>
+    <string name="login_info_error">用户名或密码错误！</string>
+    <string name="network_connection_timeout">网络连接超时！请检查你的网络连接！</string>
+    <string name="hi">你好， </string>
+    <string name="start_scanning">扫  描</string>
+    <string name="print_receipt">打  印</string>
+    <string name="serial_number">编号</string>
+    <string name="hotel_name">酒店</string>
+    <string name="linen_type">布草类别</string>
+    <string name="price">价格</string>
+    <string name="bluetooth_printer">蓝牙打印机</string>
+    <string name="user_logout">退出账号</string>
+    <string name="search_available_scanners">查找可用设备</string>
+    <string name="search_available_printers">查找可用设备</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="confirm_logout">确认退出当前账号？</string>
+    <string name="valid_tags_count">有效标签：</string>
+    <string name="invalid_tags_count">无效标签：</string>
+    <string name="total_tags_count">标签总数：</string>
+    <string name="data_upload_success">数据上传成功！</string>
+    <string name="app_init_success">App初始化成功！</string>
+    <string name="choose_upload_type">收件还是送件？</string>
+    <string name="collect_linen">收件</string>
+    <string name="send_linen">送件</string>
+    <string name="no_scanner_connected">未连接手持机！请到“设置”->“手持机”中搜索并连接手持机！</string>
+    <string name="no_printer_connected">未连接打印机！请到“设置”->“蓝牙打印机”中搜索并连接手持机！</string>
+    <string name="from">从：</string>
+    <string name="to">到：</string>
+    <string name="amount">数量</string>
+    <string name="wait_for_query">请等待查询完成！</string>
+    <string name="invalid_date_range">开始日期不能大于结束日期！</string>
+    <string name="clear">清  空</string>
+    <string name="upload_data">上  传</string>
+    <string name="uploading">正在上传...</string>
+    <string name="clear_inventory_confirm">确认清空数据？</string>
+    <string name="wait_for_downloading">正在加载数据！请稍后再试！</string>
+    <string name="special_wash">特洗</string>
+    <string name="confirm_exit_app">确认退出App么？</string>
+    <string name="be_patient_of_login">正在登陆，请耐心等待！</string>
+    <string name="be_patient_of_initing">正在初始化，请耐心等待！</string>
+    <string name="scannerId_remove_confirmation">要将 %s 从列表中移除么？</string>
+    <string name="scannerId_is_disconnected">%s 已断开连接</string>
+    <string name="bluetooth_discovery_finished">蓝牙搜索完成</string>
+    <string name="finding">"正在搜索...</string>
+    <string name="start" >开  始</string>
+    <string name="stop" >停  止</string>
+    <string name="bluetooth_not_open">蓝牙未开启！</string>
+    <string name="search_printer">正在搜索打印机...</string>
+    <string name="searching">正在查询...</string>
+    <string name="printer_connection_fail">打印机连接失败！</string>
+</resources>
