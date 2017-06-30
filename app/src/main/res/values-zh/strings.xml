@@ -163,7 +163,7 @@
     <string name ="item">ITEM</string>
 
     <!-- My own modification -->
-    <string name="app_name">爱拍得</string>
+    <string name="app_name">布草管理系统</string>
     <string name="company_name">公  司: </string>
     <string name="user_name">用户名: </string>
     <string name="password">密  码: </string>

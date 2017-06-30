@@ -13,5 +13,8 @@ import retrofit2.http.POST;
  */
 public interface UrlApi {
 
+    public static final String BASE_URL ="http://fangkalaundryapptest.chinacloudsites.cn/service-provider/app";
+
+    public static final String LOGIN = BASE_URL + "/login";
 
 }

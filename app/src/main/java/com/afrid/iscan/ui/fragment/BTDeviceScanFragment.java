@@ -1,13 +1,8 @@
 package com.afrid.iscan.ui.fragment;
 
 import android.Manifest;
-import android.bluetooth.BluetoothGatt;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.bluetooth.BluetoothDevice;
 import android.content.pm.PackageManager;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,24 +12,20 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.afrid.btprinter.BTPrinterManager;
 import com.afrid.iscan.R;
-import com.afrid.iscan.adapter.BTDeviceAdapter;
-import com.afrid.iscan.service.BluetoothService;
-import com.clj.fastble.BleManager;
-import com.clj.fastble.conn.BleGattCallback;
-import com.clj.fastble.data.ScanResult;
-import com.clj.fastble.exception.BleException;
-import com.wpx.WPXMain;
-import com.wpx.util.WPXUtils;
-import com.yyyu.baselibrary.utils.MyLog;
+import com.afrid.iscan.adapter.DeviceAdapter;
+import com.afrid.iscan.utils.bt.BTManager;
+import com.afrid.swingu.utils.SwingUManager;
 import com.yyyu.baselibrary.utils.MyToast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * 功能：蓝牙设备连接Fragment
@@ -54,10 +45,10 @@ public class BTDeviceScanFragment extends BaseFragment {
     ContentLoadingProgressBar pb_loading;
     @BindView(R.id.list_device)
     ListView listDevice;
-    Unbinder unbinder;
-    private BleManager bleManager;
-    private BluetoothService mBluetoothService;
-    private BTDeviceAdapter btDeviceAdapter;
+    private DeviceAdapter btDeviceAdapter;
+    private BTManager btManager;
+    private BTPrinterManager btPrinterManager;
+    private SwingUManager swingUManager;
 
     @Override
     public int getLayoutId() {
@@ -66,7 +57,9 @@ public class BTDeviceScanFragment extends BaseFragment {
 
     @Override
     protected void beforeInit() {
-        bleManager = new BleManager(getActivity());
+        btManager = BTManager.getInstance(getContext());
+        swingUManager = SwingUManager.getInstance(getContext());
+        btPrinterManager = BTPrinterManager.getInstance(getContext());
     }
 
     @Override
@@ -76,7 +69,7 @@ public class BTDeviceScanFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        btDeviceAdapter = new BTDeviceAdapter(getActivity());
+        btDeviceAdapter = new DeviceAdapter(getActivity());
         listDevice.setAdapter(btDeviceAdapter);
     }
 
@@ -85,30 +78,14 @@ public class BTDeviceScanFragment extends BaseFragment {
         listDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ScanResult scanResult = btDeviceAdapter.getScanResultList().get(position);
-                WPXUtils.bondDevice(scanResult.getDevice());
-                /*bleManager.connectDevice(btDeviceAdapter.getScanResultList().get(position),
-                        true, new BleGattCallback() {
-                            @Override
-                            public void onNotFoundDevice() {
-                                MyToast.showLong(getContext(), "onNotFoundDevice！！");
-                            }
-
-                            @Override
-                            public void onFoundDevice(ScanResult scanResult) {
-                                MyToast.showLong(getContext(), "onFoundDevice！！");
-                            }
-
-                            @Override
-                            public void onConnectSuccess(BluetoothGatt gatt, int status) {
-                                MyToast.showLong(getContext(), "连接设备成功！！");
-                            }
-
-                            @Override
-                            public void onConnectFailure(BleException exception) {
-                                MyToast.showLong(getContext(), "onConnectFailure！！");
-                            }
-                        });*/
+               BluetoothDevice device =  btDeviceAdapter.getBluetoothDeviceList().get(position);
+                String deviceName = device.getName();
+                if(deviceName.startsWith("NP")){
+                    btPrinterManager.connect( device);
+                }else if(deviceName.startsWith("SwingU")){
+                    swingUManager.connectDevice(device);
+                    swingUManager.getInstance(getContext()).startReader();
+                }
             }
         });
     }
@@ -118,82 +95,36 @@ public class BTDeviceScanFragment extends BaseFragment {
      */
     @OnClick(R.id.btn_start)
     public void startScan() {
+        if(btPrinterManager.isConnected() && swingUManager.isConncted()){
+            MyToast.showShort(getContext() , "设备已经连接了，快去使用吧！");
+            return ;
+        }
+
         btDeviceAdapter.clear();
-        checkPermissions();
+        btManager.toSysBTActivity(getActivity());
+        //checkPermissions();
+    }
+
+    @OnClick(R.id.btn_stop)
+    public void readerTest(){
+        btPrinterManager.printText("成功====\r\n123123");
+        //SwingUManager.getInstance(getContext()).startReader();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unbinder.unbind();
-        unbindService();
+    public void onResume() {
+        super.onResume();
+        //---刷新蓝牙设备（已绑定的）
+        Set<BluetoothDevice> deviceSet =  btManager.getBoundsDevice();
+        List deviceList=new ArrayList();
+        Iterator it=deviceSet.iterator();
+        while(it.hasNext()){
+            deviceList.add(it.next());
+        }
+        btDeviceAdapter.setBluetoothDeviceList(deviceList);
+        btDeviceAdapter.notifyDataSetChanged();
+
     }
-
-    private void bindService() {
-        Intent bindIntent = new Intent(getActivity(), BluetoothService.class);
-        getActivity().bindService(bindIntent, mFhrSCon, Context.BIND_AUTO_CREATE);
-    }
-
-    private void unbindService() {
-        getActivity().unbindService(mFhrSCon);
-    }
-
-    private ServiceConnection mFhrSCon = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mBluetoothService = ((BluetoothService.BluetoothBinder) service).getService();
-            mBluetoothService.setScanCallback(callback);
-            mBluetoothService.scanDevice();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mBluetoothService = null;
-        }
-    };
-
-    /**
-     * 扫描结果回调
-     */
-    private BluetoothService.Callback callback = new BluetoothService.Callback() {
-        @Override
-        public void onStartScan() {
-            pb_loading.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        public void onScanning(ScanResult result) {
-            MyLog.e("============" + result.getDevice().getAddress());
-            btDeviceAdapter.addResult(result);
-            btDeviceAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onScanComplete() {
-            pb_loading.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void onConnecting() {
-
-        }
-
-        @Override
-        public void onConnectFail() {
-            MyToast.showLong(getContext(), "蓝牙连接失败");
-        }
-
-        @Override
-        public void onDisConnected() {
-            MyToast.showLong(getContext(), "蓝牙已断开");
-        }
-
-        @Override
-        public void onServicesDiscovered() {
-
-        }
-    };
-
 
     /**
      * 权限检查
@@ -223,11 +154,8 @@ public class BTDeviceScanFragment extends BaseFragment {
     private void onPermissionGranted(String permission) {
         switch (permission) {
             case Manifest.permission.ACCESS_FINE_LOCATION:
-                if (mBluetoothService == null) {
-                    bindService();
-                } else {
-                    mBluetoothService.scanDevice();
-                }
+                BTManager btManager = BTManager.getInstance(getContext());
+                btManager.startDescovery();
                 break;
         }
     }

@@ -163,7 +163,7 @@
     <string name ="item">ITEM</string>
 
     <!-- My own modification -->
-    <string name="app_name">ISCAN</string>
+    <string name="app_name">LINEN MANAGER SYSTEM </string>
     <string name="company_name">Company: </string>
     <string name="user_name">Username: </string>
     <string name="password">Password: </string>
