@@ -1,18 +1,19 @@
-package com.afrid.iscan.ui.fragment;
+package com.afrid.iscan.ui.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.afrid.iscan.R;
-import com.afrid.iscan.ui.activity.SubmitResultActivity;
-import com.afrid.iscan.utils.LogicUtils;
 import com.afrid.swingu.utils.SwingUManager;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * 功能：布草扫描界面
@@ -22,7 +23,7 @@ import butterknife.Unbinder;
  * @date 2017/6/27
  */
 
-public class LinenScanFragment extends BaseFragment {
+public class LinenScanActivity extends BaseActivity {
 
     @BindView(R.id.tv_hospital)
     TextView tvHospital;
@@ -51,10 +52,18 @@ public class LinenScanFragment extends BaseFragment {
     public  final static int SPACE = 10;
     private int timeSpace = SPACE;
     private static final long TIME = 1000;
+    private SwingUManager swingUManager;
+
+    private List<String> tagList;
 
     @Override
     public int getLayoutId() {
         return R.layout.fragment_linen_scan;
+    }
+
+    @Override
+    public void beforeInit() {
+        swingUManager = SwingUManager.getInstance(this);
     }
 
     @Override
@@ -66,7 +75,12 @@ public class LinenScanFragment extends BaseFragment {
 
     @Override
     protected void initListener() {
-
+        swingUManager.setOnReadResultListener(new SwingUManager.OnReadResultListener() {
+            @Override
+            public void onRead(String tagId) {
+                tagList.add(tagId);
+            }
+        });
     }
 
     @OnClick(R.id.btn_next)
@@ -79,7 +93,7 @@ public class LinenScanFragment extends BaseFragment {
         tvTipTopCenter.setText("布草车");
         switch (scanStep) {
             case 0://前
-                SwingUManager.getInstance(getContext()).startReader();
+                swingUManager.startReader();
                 tvTipBefore.setTextColor(getResources().getColor(R.color.colorAccent));
                 tvTipBefore.setText("请将扫描仪放在\r\n布草车前面");
                 break;
@@ -121,7 +135,8 @@ public class LinenScanFragment extends BaseFragment {
                 break;
         }
         if (scanStep>9){//TODO 结束扫描
-            SubmitResultActivity.startAction(getActivity());
+
+            SubmitResultActivity.startAction(this);
         }else{
             mHandler.postDelayed(runnable, 0);
         }
@@ -153,5 +168,10 @@ public class LinenScanFragment extends BaseFragment {
             }
         }
     };
+
+    public static void startAction(Activity activity){
+        Intent intent = new Intent(activity , LinenScanActivity.class);
+        activity.startActivity(intent);
+    }
 
 }

@@ -66,7 +66,6 @@ public class SplashActivity extends BaseActivity{
     protected void initData() {
         //---刷新蓝牙设备（已绑定的）
         Set<BluetoothDevice> deviceSet =  btManager.getBoundsDevice();
-        List deviceList=new ArrayList();
         Iterator it=deviceSet.iterator();
         while(it.hasNext()){
             BluetoothDevice device = (BluetoothDevice) it.next();
@@ -75,7 +74,6 @@ public class SplashActivity extends BaseActivity{
                 btPrinterManager.connect( device);
             }else if(deviceName.startsWith("SwingU")){
                 swingUManager.connectDevice(device);
-                swingUManager.getInstance(this).startReader();
             }
         }
     }

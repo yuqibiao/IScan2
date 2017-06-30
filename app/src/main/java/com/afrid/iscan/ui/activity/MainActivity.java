@@ -19,7 +19,6 @@ import com.afrid.iscan.MyApplication;
 import com.afrid.iscan.R;
 import com.afrid.iscan.bean.json.UserInfo;
 import com.afrid.iscan.gobal.Constant;
-import com.afrid.iscan.ui.fragment.BTDeviceScanFragment;
 import com.afrid.iscan.ui.fragment.DepartmentsChoiceFragment;
 import com.afrid.swingu.utils.SwingUManager;
 import com.yyyu.baselibrary.utils.ActivityHolder;
@@ -109,11 +108,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             ft.replace(R.id.fl_content , new DepartmentsChoiceFragment());
             ft.commit();
         }else if (id == R.id.nav_bt) {//设备链接
-            toolbar.setTitle("设备连接");
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-            ft.replace(R.id.fl_content , new BTDeviceScanFragment());
-            ft.commit();
+            BTDeviceScanActivity.startAction(this);
         } else if (id == R.id.nav_order) {
 
         }  else if (id == R.id.nav_exit) {//注销账号

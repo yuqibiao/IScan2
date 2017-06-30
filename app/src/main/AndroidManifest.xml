@@ -25,16 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.ConnectSuccessActivity">
 
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".ui.activity.BTDeviceScanActivity"/>
+        <activity android:name=".ui.activity.ConnectSuccessActivity"/>
+        <activity android:name=".ui.activity.LinenScanActivity"/>
+        <activity android:name=".ui.activity.TypeChoiceActivity"/>
+        <activity android:name=".ui.activity.SubmitResultActivity"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
         <!-- 蓝牙广播 -->
         <receiver
             android:name=".utils.bt.BTReceiver"
@@ -46,10 +43,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.activity.LineScanActivity" />
-        <activity android:name=".ui.activity.TypeChoiceActivity" />
-        <activity android:name=".ui.activity.SubmitResultActivity" />
-        <activity android:name=".ui.activity.BTDeviceScanActivity"></activity>
     </application>
 
 </manifest>
