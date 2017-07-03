@@ -10,10 +10,10 @@
             android:id="@+id/nav_bt"
             android:icon="@mipmap/ic_bt"
             android:title="设备连接" />
-        <item
+        <!--<item
             android:id="@+id/nav_order"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="查看订单" />
+            android:title="查看订单" />-->
     </group>
 
     <item android:title="其它">

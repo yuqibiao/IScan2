@@ -137,7 +137,7 @@ public class LinenScanActivity extends BaseActivity {
                 break;
             case 3://右
                 tvTipRight.setTextColor(getResources().getColor(R.color.colorAccent));
-                tvTipRight.setText("请将扫描仪放在\r\n布草车左边");
+                tvTipRight.setText("请将扫描仪放在\r\n布草车右边");
                 break;
             case 4://顶部
                 tvTipTopCenter.setTextColor(getResources().getColor(R.color.colorAccent));
@@ -157,7 +157,7 @@ public class LinenScanActivity extends BaseActivity {
                 break;
             case 8://复核右
                 tvTipRight.setTextColor(getResources().getColor(R.color.colorAccent));
-                tvTipRight.setText("复核\r\n布草车左边");
+                tvTipRight.setText("复核\r\n布草车右边");
                 break;
             case 9://复核顶部
                 tvTipTopCenter.setTextColor(getResources().getColor(R.color.colorAccent));

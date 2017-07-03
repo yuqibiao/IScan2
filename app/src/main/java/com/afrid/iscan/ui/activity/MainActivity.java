@@ -41,7 +41,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private TextView tvFactoryName;
     private TextView tvUsername;
     private UserInfo userInfo;
-
     @Override
     public void beforeInit() {
         userInfo = (UserInfo) getIntent().getSerializableExtra(Constant.USER_INFO);
@@ -109,9 +108,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             ft.commit();
         }else if (id == R.id.nav_bt) {//设备链接
             BTDeviceScanActivity.startAction(this);
-        } else if (id == R.id.nav_order) {
-
-        }  else if (id == R.id.nav_exit) {//注销账号
+        }else if (id == R.id.nav_exit) {//注销账号
             MySPUtils.remove(this , Constant.USER_INFO);
             ActivityHolder.finishedAll();
         }
