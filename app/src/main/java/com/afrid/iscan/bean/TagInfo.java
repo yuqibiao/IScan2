@@ -10,22 +10,9 @@ public class TagInfo {
 	private String specialWashPrice;
 	private String returnWashPrice;
 	private String washTimes;
+	private String businessType;
 
 	public TagInfo() {
-	}
-
-	public TagInfo(final String tid, final String objID, final String objName, final String orgID, final String orgName,
-			final String normalWashPrice, final String specialWashPrice,
-			final String returnWashPrice, final String washTimes) {
-		this.tid = tid;
-		this.objID = objID;
-		this.objName = objName;
-		this.orgID = orgID;
-		this.orgName = orgName;
-		this.normalWashPrice = normalWashPrice;
-		this.specialWashPrice = specialWashPrice;
-		this.returnWashPrice = returnWashPrice;
-		this.washTimes = washTimes;
 	}
 
 	public void setTID(final String tid) {
@@ -97,5 +84,13 @@ public class TagInfo {
 	}
 	public String getWashTimes() {
 		return washTimes;
+	}
+	
+	
+	public void setBusinessType(final String businessType) {
+		this.businessType = businessType;
+	}
+	public String getBusinessType() {
+		return businessType;
 	}
 }

@@ -33,7 +33,7 @@ public class ConnectSuccessActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_connect_success;
+        return R.layout.activity_connect_success;
     }
 
     @Override

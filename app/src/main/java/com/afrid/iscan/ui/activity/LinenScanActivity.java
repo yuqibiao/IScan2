@@ -57,7 +57,7 @@ public class LinenScanActivity extends BaseActivity {
      */
     private int scanStep = 0;
 
-    public final static int SPACE = 1;
+    public final static int SPACE = 10;
     private int timeSpace = SPACE;
     private static final long TIME = 1000;
     private SwingUManager swingUManager;
@@ -71,7 +71,7 @@ public class LinenScanActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_linen_scan;
+        return R.layout.activity_linen_scan;
     }
 
     @Override
@@ -122,6 +122,7 @@ public class LinenScanActivity extends BaseActivity {
         tvTipTopCenter.setText("布草车");
         switch (scanStep) {
             case 0://前
+                swingUManager.resetReader();
                 swingUManager.startReader();
                 tvTipBefore.setTextColor(getResources().getColor(R.color.colorAccent));
                 tvTipBefore.setText("请将扫描仪放在\r\n布草车前面");
@@ -169,7 +170,7 @@ public class LinenScanActivity extends BaseActivity {
             while (iterator.hasNext()) {
                 tagList.add(iterator.next());
             }
-            SubmitResultActivity.startAction(this, hospital, linenType,tagList);
+            SubmitResultActivity.startAction(this, hospital, dept , linenType,tagList);
             finish();
         } else {
             mHandler.postDelayed(runnable, 0);

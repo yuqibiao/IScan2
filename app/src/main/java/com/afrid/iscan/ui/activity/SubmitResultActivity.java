@@ -28,6 +28,7 @@ import com.afrid.iscan.utils.NetUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yyyu.baselibrary.utils.MyLog;
+import com.yyyu.baselibrary.utils.MyToast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ import butterknife.Unbinder;
 
 public class SubmitResultActivity extends BaseActivity {
 
+    private String TAG = "SubmitResultActivity";
 
     @BindView(R.id.tv_hospital)
     TextView tvHospital;
@@ -58,27 +60,36 @@ public class SubmitResultActivity extends BaseActivity {
     TextView tvDepartment;
     @BindView(R.id.tv_linen_type)
     TextView tvLinenType;
+    @BindView(R.id.tv_useless_tag)
+    TextView tvUselessTag;
+    @BindView(R.id.tv_out_of_range)
+    TextView tvOutOfRange;
     @BindView(R.id.rv_order)
     RecyclerView rvOrder;
     @BindView(R.id.btn_submit)
     Button btnSubmit;
+    //---TAG UID 集合
     private ArrayList<String> tagList;
-    private List<TagInfo> tagInfoList;
-
+    //--- key：标签类型名 value：标签信息集合
     private HashMap<String, List<TagInfo>> container;
+    //---非本科室标签
+    private List<TagInfo> outOfRangeTagList = new ArrayList<>();
+    //---无用标签
+    private List<TagInfo> uselessTagList = new ArrayList<>();
     private LinenAdapter adapter;
-    private String TAG = "SubmitResultActivity";
     private String hospital;
     private int linenType;
+    private String dept;
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_submit_result;
+        return R.layout.activity_submit_result;
     }
 
     @Override
     public void beforeInit() {
         tagList = getIntent().getStringArrayListExtra("tagList");
+        dept = getIntent().getStringExtra("dept");
         hospital = getIntent().getStringExtra("hospital");
         linenType = getIntent().getIntExtra("linenType", -1);
         container = new HashMap<>();
@@ -86,10 +97,20 @@ public class SubmitResultActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        tvHospital.setText("您所在的医院是：郑州省人民医院");
-        tvDepartment.setText("要收布草的科室为：消化内科第一科");
-        tvLinenType.setText("收货类型为：正常布草");
-
+        tvHospital.setText("您所在的医院是："+hospital);
+        tvDepartment.setText("要收布草的科室为："+dept);
+        tvLinenType.setText("收货类型为："+linenType);
+        switch (linenType) {
+            case 0:
+                tvLinenType.setText("收货类型为：正常布草" );
+                break;
+            case 1:
+                tvLinenType.setText("收货类型为：特殊布草" );
+                break;
+            case 2:
+                tvLinenType.setText("收货类型为：返厂布草" );
+                break;
+        }
         rvOrder.setLayoutManager(new LinearLayoutManager(this));
         adapter = new LinenAdapter(this);
         rvOrder.setAdapter(adapter);
@@ -103,6 +124,7 @@ public class SubmitResultActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        showLoadDialog("数据加载中....");
         Message message = new Message();
         XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
         message.setJsonMessage(mGson.toJson(tagList));
@@ -121,6 +143,8 @@ public class SubmitResultActivity extends BaseActivity {
                             container.put(tagInfo.getObjName(), new ArrayList<TagInfo>());
                         }
                         container.get(tagInfo.getObjName()).add(tagInfo);
+                    }else{//---其他医院/未识别 标签
+                        outOfRangeTagList.add(tagInfo);
                     }
                 }
                 List<ScanResult> mData = new ArrayList<>();
@@ -131,24 +155,27 @@ public class SubmitResultActivity extends BaseActivity {
                     int tagNum = entry.getValue().size();
                     mData.add(new ScanResult(tagName, tagNum));
                 }
+                hidenLoadingDialog();
                 adapter.setmData(mData);
-
+                tvUselessTag.setText("无用标签的数量有："+(tagList.size()-tagInfoList.size())+"个");
+                tvOutOfRange.setText("非本科室的标签数为："+outOfRangeTagList.size()+"个");
             }
 
             @Override
             public void onFailed(String error) {
-
+                MyToast.showShort(SubmitResultActivity.this , error);
+                hidenLoadingDialog();
             }
         });
     }
 
     @OnClick(R.id.btn_submit)
-    public void oprate(View view) {
-        //---TODO 确认收货
+    public void operate(View view) {
+        btnSubmit.setEnabled(false);
         //---得到选中的
         List<String> checkedList = adapter.getCheckedPosition();
         List<TagInfo> temp = new ArrayList<>();
-        for (String  key :checkedList){
+        for (String  key : checkedList){
             temp.addAll(container.get(key));
         }
 
@@ -167,6 +194,9 @@ public class SubmitResultActivity extends BaseActivity {
         if(!TextUtils.isEmpty(url)){
             final String uid = UUID.randomUUID().toString();
             MyApplication myApplication = (MyApplication)getApplication();
+            Message message = new Message();
+            XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
+            message.setXdCompany(xdCompany);
             UserInfo userInfo = myApplication.getUserInfo();
             WashReceiveInfo washReceiveInfo = new WashReceiveInfo();
             washReceiveInfo.setUser(userInfo.getUser());
@@ -174,28 +204,36 @@ public class SubmitResultActivity extends BaseActivity {
             washReceiveInfo.setTags(temp);
             washReceiveInfo.setDept(myApplication.getDept());
             washReceiveInfo.setBarCode(uid);
-            String param = mGson.toJson(washReceiveInfo);
+            message.setJsonMessage(mGson.toJson(washReceiveInfo));
+            String param = mGson.toJson(message);
             new NetUtils().getData(url,param , new NetUtils.OnResultListener() {
                 @Override
                 public void onSuccess(String result) {
                     MyLog.e(TAG , "result"+result);
-                    //打印条码
-                    BTPrinterManager.getInstance(SubmitResultActivity.this).printOne(uid);
-                    finish();
+                    if(result.equals("1")){
+                        //打印条码
+                        BTPrinterManager.getInstance(SubmitResultActivity.this).printOne(uid);
+                        finish();
+                    }else{
+                        MyToast.showShort(SubmitResultActivity.this , "内部错误，请重新提交");
+                        btnSubmit.setEnabled(true);
+                    }
                 }
 
                 @Override
                 public void onFailed(String error) {
-
+                    btnSubmit.setEnabled(true);
+                    MyToast.showShort(SubmitResultActivity.this , error);
                 }
             });
         }
     }
 
 
-    public static void startAction(Activity activity, String hospital, int linenType, ArrayList<String> tagList) {
+    public static void startAction(Activity activity, String hospital, String dept , int linenType, ArrayList<String> tagList) {
         Intent intent = new Intent(activity, com.afrid.iscan.ui.activity.SubmitResultActivity.class);
         intent.putStringArrayListExtra("tagList", tagList);
+        intent.putExtra("dept" , dept);
         intent.putExtra("hospital", hospital);
         intent.putExtra("linenType", linenType);
         activity.startActivity(intent);

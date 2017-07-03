@@ -72,6 +72,8 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
+        showLoadDialog("   登录中...   ");
+
         final Gson gson = new Gson();
 
         OptUser optUser = new OptUser();
@@ -90,8 +92,8 @@ public class LoginActivity extends BaseActivity {
         new NetUtils().getData(UrlApi.LOGIN, params, new NetUtils.OnResultListener() {
             @Override
             public void onSuccess(String result) {
+                hidenLoadingDialog();
                 MyLog.e(result);
-
                 Message msg = gson.fromJson(result , Message.class);
 
                 if(msg.getXdCompany()==null){
@@ -110,11 +112,13 @@ public class LoginActivity extends BaseActivity {
                 //---登录成功记住用户信息
                 MySPUtils.put(LoginActivity.this , Constant.USER_INFO , gson.toJson(userInfo));
                 MainActivity.startAction(LoginActivity.this , userInfo);
+                finish();
             }
 
             @Override
             public void onFailed(String error) {
                 MyToast.showLong(LoginActivity.this , "请检查你的网络！！");
+                hidenLoadingDialog();
             }
         });
     }

@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:hint="工厂名"
-        android:text="测试洗涤工厂"
+        android:text=""
         android:inputType="text" />
 
     <EditText
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="测试收发员"
+        android:text=""
         android:hint="用户名"
         android:inputType="text" />
 
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:text="cssfy"
+        android:text=""
         android:hint="密码"
         android:inputType="textPassword" />
 

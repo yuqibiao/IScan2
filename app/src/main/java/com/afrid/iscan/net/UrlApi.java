@@ -13,7 +13,7 @@ import retrofit2.http.POST;
  */
 public interface UrlApi {
 
-    public static final String BASE_URL ="http://192.168.1.113:8080/SwingUserver/service-provider/app";//"http://fangkalaundryapptest.chinacloudsites.cn/service-provider/app";
+    public static final String BASE_URL ="http://192.168.1.101:8080/SwingUserver/service-provider/app";//"http://fangkalaundryapptest.chinacloudsites.cn/service-provider/app";
 
     /**
      * 登录

@@ -33,7 +33,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * 功能：蓝牙设备连接Fragment
+ * 功能：蓝牙设备连接Activity
  *
  * @author yu
  * @version 1.0
@@ -57,7 +57,7 @@ public class BTDeviceScanActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_bt_device_scan;
+        return R.layout.activity_bt_device_scan;
     }
 
     @Override

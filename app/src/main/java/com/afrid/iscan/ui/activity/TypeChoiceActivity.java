@@ -34,7 +34,7 @@ public class TypeChoiceActivity extends BaseActivity {
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_type_choice;
+        return R.layout.activity_type_choice;
     }
 
     @Override

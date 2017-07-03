@@ -21,11 +21,13 @@ import com.afrid.iscan.bean.SpOffice;
 import com.afrid.iscan.bean.XdSysUseArea;
 import com.afrid.iscan.bean.json.UserInfo;
 import com.afrid.iscan.net.UrlApi;
+import com.afrid.iscan.ui.activity.BaseActivity;
 import com.afrid.iscan.ui.activity.TypeChoiceActivity;
 import com.afrid.iscan.utils.LogicUtils;
 import com.afrid.iscan.utils.NetUtils;
 import com.afrid.swingu.utils.SwingUManager;
 import com.google.gson.Gson;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.yyyu.baselibrary.utils.MyLog;
 import com.yyyu.baselibrary.utils.MyToast;
 import com.yyyu.baselibrary.view.recyclerview.adapter.HeaderAndFooterWrapper;
@@ -61,12 +63,19 @@ public class DepartmentsChoiceFragment extends BaseFragment {
     private String checkedDept;//科室
     private List<SpOffice> selectDept;
     private MyApplication myApplication;
+    private KProgressHUD loadingDialog;
 
     @Override
     protected void beforeInit() {
         userInfo = ((MyApplication) getActivity().getApplication()).getUserInfo();
         myApplication = (MyApplication)getActivity().getApplication();
         gson = new Gson();
+        loadingDialog = KProgressHUD.create(getActivity())
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("数据加载中...")
+                .setCancellable(true)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
     }
 
     @Override
@@ -132,6 +141,9 @@ public class DepartmentsChoiceFragment extends BaseFragment {
 
     @Override
     protected void initData() {
+
+        loadingDialog.show();
+
         UserInfo userInfo = ((MyApplication) getActivity().getApplication()).getUserInfo();
         Message message = new Message();
         message.setXdCompany(userInfo.getXdCompany());
@@ -140,6 +152,9 @@ public class DepartmentsChoiceFragment extends BaseFragment {
 
             @Override
             public void onSuccess(String result) {
+
+                loadingDialog.dismiss();
+
                 MyLog.e(result);
                 orgAreaDept = gson.fromJson(result , OrgAreaDept.class);
                 areaNameList = new ArrayList();
@@ -166,6 +181,7 @@ public class DepartmentsChoiceFragment extends BaseFragment {
 
             @Override
             public void onFailed(String error) {
+                loadingDialog.dismiss();
                 MyToast.showShort(getContext() , error);
             }
         });

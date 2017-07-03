@@ -3,12 +3,14 @@ package com.afrid.iscan.ui.activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.ChangeBounds;
 import android.transition.Fade;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.yyyu.baselibrary.utils.ActivityHolder;
 
 import butterknife.ButterKnife;
@@ -27,6 +29,7 @@ public  abstract  class BaseActivity extends AppCompatActivity {
 
     protected Gson mGson;
     private Unbinder mUnbind;
+    private KProgressHUD loadingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +85,26 @@ public  abstract  class BaseActivity extends AppCompatActivity {
      */
     protected void afterInit() {
 
+    }
+
+    /**
+     * 显示加载框
+     *
+     * @param tip
+     */
+    protected  void showLoadDialog(String tip){
+        loadingDialog = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel(tip)
+                /*.setDetailsLabel("Downloading data")*/
+                .setCancellable(true)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f)
+                .show();
+    }
+
+    protected  void hidenLoadingDialog(){
+        loadingDialog.dismiss();
     }
 
     @Override
