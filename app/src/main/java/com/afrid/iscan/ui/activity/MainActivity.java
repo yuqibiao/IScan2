@@ -139,7 +139,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }else{
-            super.onBackPressed();
             if (System.currentTimeMillis() - currentTime > 2 * 1000) {
                 MyToast.showShort(this, "再按一次退出系统");
             } else {

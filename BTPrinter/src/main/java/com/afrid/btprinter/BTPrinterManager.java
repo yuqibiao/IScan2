@@ -42,6 +42,13 @@ public class BTPrinterManager {
         return InstanceHolder.INSTANCE;
     }
 
+    public void printOne(String info){
+        WPXMain.printCommand(GeneralAttributes.INSTRUCTIONS_GS_CHARACTER_SIZE_DEFUALT);
+        WPXMain.printCommand(GeneralAttributes.INSTRUCTIONS_ESC_ALIGN_CENTER);
+        IBluetoothPrint print = WPXMain.getBluetoothPrint();
+        print.printOne(info);
+    }
+
     /**
      * 打印文字(居中)
      * @param info

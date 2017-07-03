@@ -29,6 +29,8 @@ public class TypeChoiceActivity extends BaseActivity {
     TextView tvHospital;
     @BindView(R.id.tv_department)
     TextView tvDepartment;
+    private String hos;
+    private String dept;
 
     @Override
     public int getLayoutId() {
@@ -36,9 +38,15 @@ public class TypeChoiceActivity extends BaseActivity {
     }
 
     @Override
+    public void beforeInit() {
+        hos = getIntent().getStringExtra("hos");
+        dept = getIntent().getStringExtra("dept");
+    }
+
+    @Override
     protected void initView() {
-        tvHospital.setText("您所在的医院是：郑州省人民医院");
-        tvDepartment.setText("消化内科第一科");
+        tvHospital.setText("您所在的医院是："+hos);
+        tvDepartment.setText(""+dept);
     }
 
     @Override
@@ -61,19 +69,23 @@ public class TypeChoiceActivity extends BaseActivity {
         switch (view.getId()) {
             //---TODO 判断设备是否连接成功
             case R.id.btn_normal:
-                LinenScanActivity.startAction(this);
+                LinenScanActivity.startAction(this , hos , dept,0 );
                 break;
             case R.id.btn_special:
+                LinenScanActivity.startAction(this , hos , dept,1 );
                 break;
             case R.id.btn_return:
+                LinenScanActivity.startAction(this , hos , dept,2);
                 break;
             case R.id.btn_stop:
                 break;
         }
     }
 
-    public static void startAction(Activity activity){
-        Intent intent = new Intent(activity , com.afrid.iscan.ui.activity.TypeChoiceActivity.class);
+    public static void startAction(Activity activity , String hos , String dept){
+        Intent intent = new Intent(activity , TypeChoiceActivity.class);
+        intent.putExtra("hos" , hos);
+        intent.putExtra("dept" , dept);
         activity.startActivity(intent);
     }
 

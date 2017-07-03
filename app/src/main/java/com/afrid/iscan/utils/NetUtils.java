@@ -23,20 +23,22 @@ public class NetUtils {
 
     private static final int CONNECTION_TIMEOUT = 20000;
     private static final int SOCKET_TIMEOUT = 20000;
-
-
     private static boolean connectionTimeout, socketTimeout;
-
     private static final int ON_SUCCESS = 0;
+    private static final int ON_FAILED = 1;
     private OnResultListener mOnResultListener;
 
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            if (mOnResultListener==null) return;
             switch (msg.arg1){
                 case ON_SUCCESS:
                     mOnResultListener.onSuccess(msg.obj.toString());
+                    break;
+                case ON_FAILED:
+                    mOnResultListener.onFailed(msg.obj.toString());
                     break;
             }
         }
@@ -50,24 +52,20 @@ public class NetUtils {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String resultString = HttpPostTest(url, param);
-                Message msg = new Message();
-                msg.arg1 = ON_SUCCESS;
-                msg.obj = resultString;
-                mHandler.sendMessage(msg);
-
+                httpPost(url, param);
             }
         }).start();
     }
 
     public interface  OnResultListener{
         void onSuccess(String result);
+        void onFailed(String error);
     }
 
     
 
     
-    public static String HttpPostTest(String url, String jsonToPost) {
+    public  void  httpPost(String url, String jsonToPost) {
     	String jsonString = "";
     	
     	HttpParams httpParameters = new BasicHttpParams();
@@ -95,22 +93,19 @@ public class NetUtils {
 
             // Execute POST request to the given URL
             HttpResponse httpResponse = httpClient.execute(httpPost);
-
             reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
-
             jsonString = reader.readLine();
+            Message msg = new Message();
+            msg.arg1 = ON_SUCCESS;
+            msg.obj = jsonString;
+            mHandler.sendMessage(msg);
 
-        } catch (ConnectTimeoutException e) {
-            connectionTimeout = true;
-            e.printStackTrace();
-        } catch (SocketTimeoutException e) {
-            socketTimeout = true;
-            e.printStackTrace();
-        } catch (HttpHostConnectException e) {
-            connectionTimeout = true;
-            e.printStackTrace();
-        } catch (Exception e) {
-            Log.e(TAG, "HttpPostTest: ========="+e.getMessage() );
+        }catch (Exception e) {
+            Message msg = new Message();
+            msg.arg1 = ON_FAILED;
+            msg.obj = e.getMessage();
+            mHandler.sendMessage(msg);
+            Log.e(TAG, "httpPostTest: ========="+e.getMessage() );
             e.printStackTrace();
         } finally {
             try {
@@ -120,8 +115,6 @@ public class NetUtils {
                 e.printStackTrace();
             }
         }
-
-        return jsonString;
     }
 
 }

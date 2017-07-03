@@ -111,6 +111,11 @@ public class LoginActivity extends BaseActivity {
                 MySPUtils.put(LoginActivity.this , Constant.USER_INFO , gson.toJson(userInfo));
                 MainActivity.startAction(LoginActivity.this , userInfo);
             }
+
+            @Override
+            public void onFailed(String error) {
+                MyToast.showLong(LoginActivity.this , "请检查你的网络！！");
+            }
         });
     }
 

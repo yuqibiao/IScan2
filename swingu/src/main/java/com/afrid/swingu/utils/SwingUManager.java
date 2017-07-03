@@ -42,7 +42,6 @@ public class SwingUManager {
                 case MESSAGE_TAG:
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    Log.e("TAG ID", readMessage);
                     if (mOnReadResultListener!=null){
                         mOnReadResultListener.onRead(readMessage);
                     }

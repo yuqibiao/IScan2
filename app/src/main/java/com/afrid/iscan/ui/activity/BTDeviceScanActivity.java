@@ -20,9 +20,11 @@ import com.afrid.iscan.adapter.DeviceAdapter;
 import com.afrid.iscan.ui.activity.BaseActivity;
 import com.afrid.iscan.utils.bt.BTManager;
 import com.afrid.swingu.utils.SwingUManager;
+import com.yyyu.baselibrary.utils.MyLog;
 import com.yyyu.baselibrary.utils.MyToast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -81,11 +83,11 @@ public class BTDeviceScanActivity extends BaseActivity {
         listDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               BluetoothDevice device =  btDeviceAdapter.getBluetoothDeviceList().get(position);
+                BluetoothDevice device = btDeviceAdapter.getBluetoothDeviceList().get(position);
                 String deviceName = device.getName();
-                if(deviceName.startsWith("NP")){
-                    btPrinterManager.connect( device);
-                }else if(deviceName.startsWith("SwingU")){
+                if (deviceName.startsWith("NP")) {
+                    btPrinterManager.connect(device);
+                } else if (deviceName.startsWith("SwingU")) {
                     swingUManager.connectDevice(device);
                     swingUManager.getInstance(BTDeviceScanActivity.this).startReader();
                 }
@@ -98,30 +100,39 @@ public class BTDeviceScanActivity extends BaseActivity {
      */
     @OnClick(R.id.btn_start)
     public void startScan() {
-        if(btPrinterManager.isConnected() && swingUManager.isConncted()){
-            MyToast.showShort(this , "设备已经连接了，快去使用吧！");
-            return ;
+        if (btPrinterManager.isConnected() && swingUManager.isConncted()) {
+            MyToast.showShort(this, "设备已经连接了，快去使用吧！");
+            return;
         }
-
+        MyLog.e("=====start");
         btDeviceAdapter.clear();
         btManager.toSysBTActivity(this);
         //checkPermissions();
     }
 
+    Set<String> tags = new HashSet<>();
     @OnClick(R.id.btn_stop)
-    public void readerTest(){
-        btPrinterManager.printText("成功====\r\n123123");
-        //SwingUManager.getInstance(getContext()).startReader();
+    public void readerTest() {
+        swingUManager.startReader();
+        swingUManager.setOnReadResultListener(new SwingUManager.OnReadResultListener() {
+            @Override
+            public void onRead(String tagId) {
+                boolean isAdd = tags.add(tagId);
+                if (isAdd){
+                    MyLog.e(tagId+"=====size"+tags.size());
+                }
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
         //---刷新蓝牙设备（已绑定的）
-        Set<BluetoothDevice> deviceSet =  btManager.getBoundsDevice();
-        List deviceList=new ArrayList();
-        Iterator it=deviceSet.iterator();
-        while(it.hasNext()){
+        Set<BluetoothDevice> deviceSet = btManager.getBoundsDevice();
+        List deviceList = new ArrayList();
+        Iterator it = deviceSet.iterator();
+        while (it.hasNext()) {
             deviceList.add(it.next());
         }
         btDeviceAdapter.setBluetoothDeviceList(deviceList);
@@ -181,8 +192,8 @@ public class BTDeviceScanActivity extends BaseActivity {
         }
     }
 
-    public static void startAction(Activity activity){
-        Intent intent = new Intent(activity , com.afrid.iscan.ui.activity.BTDeviceScanActivity.class);
+    public static void startAction(Activity activity) {
+        Intent intent = new Intent(activity, com.afrid.iscan.ui.activity.BTDeviceScanActivity.class);
         activity.startActivity(intent);
     }
 

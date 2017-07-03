@@ -5,15 +5,36 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.afrid.btprinter.BTPrinterManager;
+import com.afrid.iscan.MyApplication;
 import com.afrid.iscan.R;
 import com.afrid.iscan.adapter.LinenAdapter;
+import com.afrid.iscan.bean.Message;
+import com.afrid.iscan.bean.ScanResult;
+import com.afrid.iscan.bean.TagInfo;
+import com.afrid.iscan.bean.WashReceiveInfo;
+import com.afrid.iscan.bean.XdCompany;
+import com.afrid.iscan.bean.json.UserInfo;
+import com.afrid.iscan.net.UrlApi;
 import com.afrid.iscan.ui.activity.BaseActivity;
+import com.afrid.iscan.utils.NetUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.yyyu.baselibrary.utils.MyLog;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,10 +62,26 @@ public class SubmitResultActivity extends BaseActivity {
     RecyclerView rvOrder;
     @BindView(R.id.btn_submit)
     Button btnSubmit;
+    private ArrayList<String> tagList;
+    private List<TagInfo> tagInfoList;
+
+    private HashMap<String, List<TagInfo>> container;
+    private LinenAdapter adapter;
+    private String TAG = "SubmitResultActivity";
+    private String hospital;
+    private int linenType;
 
     @Override
     public int getLayoutId() {
         return R.layout.fragment_submit_result;
+    }
+
+    @Override
+    public void beforeInit() {
+        tagList = getIntent().getStringArrayListExtra("tagList");
+        hospital = getIntent().getStringExtra("hospital");
+        linenType = getIntent().getIntExtra("linenType", -1);
+        container = new HashMap<>();
     }
 
     @Override
@@ -54,7 +91,8 @@ public class SubmitResultActivity extends BaseActivity {
         tvLinenType.setText("收货类型为：正常布草");
 
         rvOrder.setLayoutManager(new LinearLayoutManager(this));
-        rvOrder.setAdapter(new LinenAdapter(this));
+        adapter = new LinenAdapter(this);
+        rvOrder.setAdapter(adapter);
 
     }
 
@@ -63,14 +101,103 @@ public class SubmitResultActivity extends BaseActivity {
 
     }
 
-    @OnClick(R.id.btn_submit)
-    public void oprate(View view){
-        //---TODO 确认收货
+    @Override
+    protected void initData() {
+        Message message = new Message();
+        XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
+        message.setJsonMessage(mGson.toJson(tagList));
+        message.setXdCompany(xdCompany);
+        String params = mGson.toJson(message);
+        new NetUtils().getData(UrlApi.GET_TAGS_INFO, params, new NetUtils.OnResultListener() {
+            @Override
+            public void onSuccess(String result) {
+                TypeToken<List<TagInfo>> tagListToken = new TypeToken<List<TagInfo>>() {
+                };
+                List<TagInfo> tagInfoList = mGson.fromJson(result, tagListToken.getType());
+                MyLog.e(TAG, "tagInfoList==" + tagInfoList.size());
+                for (TagInfo tagInfo : tagInfoList) {
+                    if (tagInfo.getOrgName().equals(hospital)) {//---只留所选医院的标签
+                        if (!container.containsKey(tagInfo.getObjName())) {
+                            container.put(tagInfo.getObjName(), new ArrayList<TagInfo>());
+                        }
+                        container.get(tagInfo.getObjName()).add(tagInfo);
+                    }
+                }
+                List<ScanResult> mData = new ArrayList<>();
+                Iterator iterator = container.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, List<TagInfo>> entry = (Map.Entry<String, List<TagInfo>>) iterator.next();
+                    String tagName = entry.getKey();
+                    int tagNum = entry.getValue().size();
+                    mData.add(new ScanResult(tagName, tagNum));
+                }
+                adapter.setmData(mData);
 
+            }
+
+            @Override
+            public void onFailed(String error) {
+
+            }
+        });
     }
 
-    public static void startAction(Activity activity){
-        Intent intent = new Intent(activity , com.afrid.iscan.ui.activity.SubmitResultActivity.class);
+    @OnClick(R.id.btn_submit)
+    public void oprate(View view) {
+        //---TODO 确认收货
+        //---得到选中的
+        List<String> checkedList = adapter.getCheckedPosition();
+        List<TagInfo> temp = new ArrayList<>();
+        for (String  key :checkedList){
+            temp.addAll(container.get(key));
+        }
+
+        String url = "";
+        switch (linenType) {
+            case 0:
+                url = UrlApi.NORMAL_WASH_RECEIVE;
+                break;
+            case 1:
+                url = UrlApi.SPECIAL_WASH_RECEIVE;
+                break;
+            case 2:
+                url = UrlApi.RETURN_WASH_RECEIVE;
+                break;
+        }
+        if(!TextUtils.isEmpty(url)){
+            final String uid = UUID.randomUUID().toString();
+            MyApplication myApplication = (MyApplication)getApplication();
+            UserInfo userInfo = myApplication.getUserInfo();
+            WashReceiveInfo washReceiveInfo = new WashReceiveInfo();
+            washReceiveInfo.setUser(userInfo.getUser());
+            washReceiveInfo.setArea(myApplication.getArea());
+            washReceiveInfo.setTags(temp);
+            washReceiveInfo.setDept(myApplication.getDept());
+            washReceiveInfo.setBarCode(uid);
+            String param = mGson.toJson(washReceiveInfo);
+            new NetUtils().getData(url,param , new NetUtils.OnResultListener() {
+                @Override
+                public void onSuccess(String result) {
+                    MyLog.e(TAG , "result"+result);
+                    //打印条码
+                    BTPrinterManager.getInstance(SubmitResultActivity.this).printOne(uid);
+                    finish();
+                }
+
+                @Override
+                public void onFailed(String error) {
+
+                }
+            });
+        }
+    }
+
+
+    public static void startAction(Activity activity, String hospital, int linenType, ArrayList<String> tagList) {
+        Intent intent = new Intent(activity, com.afrid.iscan.ui.activity.SubmitResultActivity.class);
+        intent.putStringArrayListExtra("tagList", tagList);
+        intent.putExtra("hospital", hospital);
+        intent.putExtra("linenType", linenType);
         activity.startActivity(intent);
     }
 

@@ -9,8 +9,13 @@ import android.widget.TextView;
 
 import com.afrid.iscan.R;
 import com.afrid.swingu.utils.SwingUManager;
+import com.yyyu.baselibrary.utils.MyLog;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -43,18 +48,26 @@ public class LinenScanActivity extends BaseActivity {
     TextView tvTipBehind;
     @BindView(R.id.btn_next)
     Button btnNext;
+
+    private static final String TAG = "LinenScanActivity";
+
     /**
      * 0：前   1：左  2：后 3：右 4：顶
      * 5：复核前  6：复核左 7：复核右 8：复核右 9：复核顶
      */
     private int scanStep = 0;
 
-    public  final static int SPACE = 10;
+    public final static int SPACE = 1;
     private int timeSpace = SPACE;
     private static final long TIME = 1000;
     private SwingUManager swingUManager;
 
-    private List<String> tagList;
+    Set<String> tags = new HashSet<>();
+    ArrayList<String> tagList = new ArrayList<>();
+    private String hospital;
+    private String dept;
+    private int linenType;
+
 
     @Override
     public int getLayoutId() {
@@ -64,13 +77,26 @@ public class LinenScanActivity extends BaseActivity {
     @Override
     public void beforeInit() {
         swingUManager = SwingUManager.getInstance(this);
+        hospital = getIntent().getStringExtra("hospital");
+        dept = getIntent().getStringExtra("dept");
+        linenType = getIntent().getIntExtra("linenType", -1);
     }
 
     @Override
     protected void initView() {
-        tvHospital.setText("您所在的医院是：郑州省人民医院");
-        tvDepartment.setText("要收布草的科室为：消化内科第一科");
-        tvLinenType.setText("收货类型为：正常布草");
+        tvHospital.setText("您所在的医院是：" + hospital);
+        tvDepartment.setText("要收布草的科室为：" + dept);
+        switch (linenType) {
+            case 0:
+                tvLinenType.setText("收货类型为：正常布草" );
+                break;
+            case 1:
+                tvLinenType.setText("收货类型为：特殊布草" );
+                break;
+            case 2:
+                tvLinenType.setText("收货类型为：返厂布草" );
+                break;
+        }
     }
 
     @Override
@@ -78,7 +104,10 @@ public class LinenScanActivity extends BaseActivity {
         swingUManager.setOnReadResultListener(new SwingUManager.OnReadResultListener() {
             @Override
             public void onRead(String tagId) {
-                tagList.add(tagId);
+                boolean isAdd = tags.add(tagId.substring(4));
+                if (isAdd) {
+                    MyLog.e(TAG, tagId.substring(4) + "   size" + tags.size());
+                }
             }
         });
     }
@@ -134,10 +163,15 @@ public class LinenScanActivity extends BaseActivity {
                 tvTipTopCenter.setText("复核 \r\n\r\n请将扫描仪放在\r\n布草车顶部");
                 break;
         }
-        if (scanStep>9){//TODO 结束扫描
-
-            SubmitResultActivity.startAction(this);
-        }else{
+        if (scanStep > 9) {//TODO 结束扫描
+            swingUManager.stopReader();
+            Iterator<String> iterator = tags.iterator();
+            while (iterator.hasNext()) {
+                tagList.add(iterator.next());
+            }
+            SubmitResultActivity.startAction(this, hospital, linenType,tagList);
+            finish();
+        } else {
             mHandler.postDelayed(runnable, 0);
         }
     }
@@ -156,7 +190,7 @@ public class LinenScanActivity extends BaseActivity {
                     timeSpace = SPACE;
                     btnNext.setText("下一步");
                     scanStep++;
-                    if(scanStep>9){
+                    if (scanStep > 9) {
                         btnNext.setText("结束扫描");
                     }
                 } else {
@@ -169,8 +203,11 @@ public class LinenScanActivity extends BaseActivity {
         }
     };
 
-    public static void startAction(Activity activity){
-        Intent intent = new Intent(activity , LinenScanActivity.class);
+    public static void startAction(Activity activity, String hospital, String dept, int linenType) {
+        Intent intent = new Intent(activity, LinenScanActivity.class);
+        intent.putExtra("hospital", hospital);
+        intent.putExtra("dept", dept);
+        intent.putExtra("linenType", linenType);
         activity.startActivity(intent);
     }
 
