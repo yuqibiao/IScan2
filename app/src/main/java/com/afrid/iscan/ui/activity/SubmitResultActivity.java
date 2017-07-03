@@ -196,7 +196,9 @@ public class SubmitResultActivity extends BaseActivity {
             MyApplication myApplication = (MyApplication)getApplication();
             Message message = new Message();
             XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
+
             message.setXdCompany(xdCompany);
+
             UserInfo userInfo = myApplication.getUserInfo();
             WashReceiveInfo washReceiveInfo = new WashReceiveInfo();
             washReceiveInfo.setUser(userInfo.getUser());
@@ -204,8 +206,13 @@ public class SubmitResultActivity extends BaseActivity {
             washReceiveInfo.setTags(temp);
             washReceiveInfo.setDept(myApplication.getDept());
             washReceiveInfo.setBarCode(uid);
+
             message.setJsonMessage(mGson.toJson(washReceiveInfo));
+
             String param = mGson.toJson(message);
+
+            MyLog.e(TAG , "param==="+param);
+
             new NetUtils().getData(url,param , new NetUtils.OnResultListener() {
                 @Override
                 public void onSuccess(String result) {

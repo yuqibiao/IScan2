@@ -10,7 +10,10 @@ public class TagInfo {
 	private String specialWashPrice;
 	private String returnWashPrice;
 	private String washTimes;
-	private String businessType;
+	private String businessType;	//
+	private String xdDataDetailID;	// �ӱ�ID
+	private String date;
+	private String deptPrimaryKey;
 
 	public TagInfo() {
 	}
@@ -93,4 +96,28 @@ public class TagInfo {
 	public String getBusinessType() {
 		return businessType;
 	}
+	
+	
+	public void setXdDataDetailID(final String xdDataDetailID) {
+		this.xdDataDetailID = xdDataDetailID;
+	}
+	public String getXdDataDetailID() {
+		return xdDataDetailID;
+	}
+	
+	
+	public void setDate(final String date) {
+		this.date = date;
+	}
+	public String getDate() {
+		return date;
+	}
+	
+	public void setDeptPrimaryKey(final String deptPrimaryKey) {
+		this.deptPrimaryKey = deptPrimaryKey;
+	}
+	public String getDeptPrimaryKey() {
+		return deptPrimaryKey;
+	}
 }
+
