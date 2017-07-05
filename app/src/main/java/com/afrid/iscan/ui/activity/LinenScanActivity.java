@@ -84,8 +84,8 @@ public class LinenScanActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        tvHospital.setText("您所在的医院是：" + hospital);
-        tvDepartment.setText("要收布草的科室为：" + dept);
+        tvHospital.setText("您所在的酒店是：" + hospital);
+        tvDepartment.setText("要收布草的部门为：" + dept);
         switch (linenType) {
             case 0:
                 tvLinenType.setText("收货类型为：正常布草" );

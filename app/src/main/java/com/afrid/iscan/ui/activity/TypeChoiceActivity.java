@@ -45,7 +45,7 @@ public class TypeChoiceActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        tvHospital.setText("您所在的医院是："+hos);
+        tvHospital.setText("您所在的酒店是："+hos);
         tvDepartment.setText(""+dept);
     }
 
@@ -56,11 +56,11 @@ public class TypeChoiceActivity extends BaseActivity {
 
     @OnClick({R.id.btn_normal, R.id.btn_special, R.id.btn_return, R.id.btn_stop})
     public void oprate(View view) {
-        if(!BTPrinterManager.getInstance(this).isConnected()){
+       /* if(!BTPrinterManager.getInstance(this).isConnected()){
             MyToast.showShort(this , "蓝牙打印机未链接！！");
             BTDeviceScanActivity.startAction(this);
             return;
-        }
+        }*/
         if(!SwingUManager.getInstance(this).isConncted()){
             MyToast.showShort(this , "手持机未链接！！");
             BTDeviceScanActivity.startAction(this);

@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="要收布草的科室为：" />
+        android:text="要收布草的部门为：" />
 
     <TextView
         android:id="@+id/tv_department"

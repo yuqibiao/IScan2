@@ -68,6 +68,8 @@ public class SubmitResultActivity extends BaseActivity {
     RecyclerView rvOrder;
     @BindView(R.id.btn_submit)
     Button btnSubmit;
+    //---adapter 数据集合
+    private List<ScanResult> mData;
     //---TAG UID 集合
     private ArrayList<String> tagList;
     //--- key：标签类型名 value：标签信息集合
@@ -80,6 +82,7 @@ public class SubmitResultActivity extends BaseActivity {
     private String hospital;
     private int linenType;
     private String dept;
+    private BTPrinterManager btPrinterManager;
 
     @Override
     public int getLayoutId() {
@@ -93,12 +96,13 @@ public class SubmitResultActivity extends BaseActivity {
         hospital = getIntent().getStringExtra("hospital");
         linenType = getIntent().getIntExtra("linenType", -1);
         container = new HashMap<>();
+        btPrinterManager = BTPrinterManager.getInstance(SubmitResultActivity.this);
     }
 
     @Override
     protected void initView() {
-        tvHospital.setText("您所在的医院是："+hospital);
-        tvDepartment.setText("要收布草的科室为："+dept);
+        tvHospital.setText("您所在的酒店是："+hospital);
+        tvDepartment.setText("要收布草的部门为："+dept);
         tvLinenType.setText("收货类型为："+linenType);
         switch (linenType) {
             case 0:
@@ -131,6 +135,7 @@ public class SubmitResultActivity extends BaseActivity {
         message.setXdCompany(xdCompany);
         String params = mGson.toJson(message);
         new NetUtils().getData(UrlApi.GET_TAGS_INFO, params, new NetUtils.OnResultListener() {
+
             @Override
             public void onSuccess(String result) {
                 TypeToken<List<TagInfo>> tagListToken = new TypeToken<List<TagInfo>>() {
@@ -147,7 +152,7 @@ public class SubmitResultActivity extends BaseActivity {
                         outOfRangeTagList.add(tagInfo);
                     }
                 }
-                List<ScanResult> mData = new ArrayList<>();
+                mData = new ArrayList<>();
                 Iterator iterator = container.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<String, List<TagInfo>> entry = (Map.Entry<String, List<TagInfo>>) iterator.next();
@@ -158,7 +163,7 @@ public class SubmitResultActivity extends BaseActivity {
                 hidenLoadingDialog();
                 adapter.setmData(mData);
                 tvUselessTag.setText("无用标签的数量有："+(tagList.size()-tagInfoList.size())+"个");
-                tvOutOfRange.setText("非本科室的标签数为："+outOfRangeTagList.size()+"个");
+                tvOutOfRange.setText("非本酒店的标签数为："+outOfRangeTagList.size()+"个");
             }
 
             @Override
@@ -219,7 +224,33 @@ public class SubmitResultActivity extends BaseActivity {
                     MyLog.e(TAG , "result"+result);
                     if(result.equals("1")){
                         //打印条码
-                        BTPrinterManager.getInstance(SubmitResultActivity.this).printOne(uid);
+                        for (int i=0 ; i<2 ; i++){
+                            btPrinterManager.printOne(uid);
+                            StringBuffer sbPrint  = new StringBuffer();
+                            sbPrint.append("\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("明杰租赁\r\n"+"-----------------------------------\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("酒店："+hospital+"\r\n");
+                            sbPrint.append("部门："+dept+"\r\n");
+                            sbPrint.append("\r\n");
+                            for (ScanResult scanResult :mData ) {
+                                sbPrint.append("类别："+scanResult.getTagName()+"--------数量："+scanResult.getTagNum()+"\r\n");
+                            }
+                            sbPrint.append("\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("收发人员签字________________________");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("--www.arfid.co(阿菲德洗涤系统)--"+"\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("\r\n");
+
+                            btPrinterManager.printText(sbPrint.toString());
+                        }
                         finish();
                     }else{
                         MyToast.showShort(SubmitResultActivity.this , "内部错误，请重新提交");
