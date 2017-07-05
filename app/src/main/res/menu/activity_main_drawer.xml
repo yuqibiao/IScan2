@@ -7,6 +7,10 @@
             android:icon="@mipmap/ic_home"
             android:title="布草管理" />
         <item
+            android:id="@+id/nav_place_order"
+            android:icon="@mipmap/ic_place_order"
+            android:title="发货" />
+        <item
             android:id="@+id/nav_bt"
             android:icon="@mipmap/ic_bt"
             android:title="设备连接" />

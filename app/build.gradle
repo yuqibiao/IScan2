@@ -56,4 +56,5 @@ dependencies {
     compile project(':swingu')
     compile files('libs/org.apache.http.legacy.jar')
     compile project(':BTPrinter')
+    compile project(':libzxing')
 }

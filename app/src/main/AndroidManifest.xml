@@ -28,13 +28,11 @@
         <activity android:name=".ui.activity.LinenScanActivity"/>
         <activity android:name=".ui.activity.TypeChoiceActivity"/>
         <activity android:name=".ui.activity.SubmitResultActivity"/>
-
         <!-- 蓝牙广播 -->
         <receiver
             android:name=".utils.bt.BTReceiver"
             android:exported="true">
             <intent-filter android:priority="10000">
-
                 <!-- 扫描时,发现蓝牙设备 -->
                 <action android:name="android.bluetooth.device.action.FOUND" />
             </intent-filter>

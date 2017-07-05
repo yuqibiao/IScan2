@@ -3,8 +3,10 @@ package com.afrid.iscan.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,10 +22,14 @@ import com.afrid.iscan.R;
 import com.afrid.iscan.bean.json.UserInfo;
 import com.afrid.iscan.gobal.Constant;
 import com.afrid.iscan.ui.fragment.DepartmentsChoiceFragment;
+import com.afrid.iscan.ui.fragment.PlaceOrderFragment;
 import com.afrid.swingu.utils.SwingUManager;
+import com.xys.libzxing.zxing.activity.CaptureActivity;
 import com.yyyu.baselibrary.utils.ActivityHolder;
 import com.yyyu.baselibrary.utils.MySPUtils;
 import com.yyyu.baselibrary.utils.MyToast;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -41,6 +47,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private TextView tvFactoryName;
     private TextView tvUsername;
     private UserInfo userInfo;
+
+    private static final int PLACE_ORDER =0;
+
     @Override
     public void beforeInit() {
         userInfo = (UserInfo) getIntent().getSerializableExtra(Constant.USER_INFO);
@@ -106,7 +115,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             FragmentTransaction ft = fragmentManager.beginTransaction();
             ft.replace(R.id.fl_content , new DepartmentsChoiceFragment());
             ft.commit();
-        }else if (id == R.id.nav_bt) {//设备链接
+        }else if(id == R.id.nav_place_order){//下单
+            palceOrder();
+        }
+        else if (id == R.id.nav_bt) {//设备链接
             BTDeviceScanActivity.startAction(this);
         }else if (id == R.id.nav_exit) {//注销账号
             MySPUtils.remove(this , Constant.USER_INFO);
@@ -114,6 +126,32 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PLACE_ORDER && resultCode == RESULT_OK){
+            String result = data.getStringExtra("result");
+            //MyToast.showShort(this , "result-----"+result);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            List<Fragment> fragmentList = fragmentManager.getFragments();
+            for (Fragment fragment:fragmentList) {
+                if(fragment instanceof PlaceOrderFragment){
+                    ((PlaceOrderFragment)fragment).setOrderData(result);
+                }
+            }
+        }
+    }
+
+    public void palceOrder(){
+        toolbar.setTitle("下单");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.replace(R.id.fl_content , new PlaceOrderFragment());
+        ft.commit();
+        Intent intent = new Intent(this , CaptureActivity.class);
+        startActivityForResult(intent , PLACE_ORDER);
     }
 
     public static void startAction(Activity activity , UserInfo userInfo){

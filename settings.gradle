@@ -1,1 +1,1 @@
-include ':app', ':baselibrary', ':swingu', ':BTPrinter'
+include ':app', ':baselibrary', ':swingu', ':BTPrinter', ':libzxing'

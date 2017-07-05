@@ -182,7 +182,9 @@ public class DepartmentsChoiceFragment extends BaseFragment {
             @Override
             public void onFailed(String error) {
                 loadingDialog.dismiss();
-                MyToast.showShort(getContext() , error);
+                if(getContext()!=null){
+                    MyToast.showShort(getContext() , ""+error);
+                }
             }
         });
     }

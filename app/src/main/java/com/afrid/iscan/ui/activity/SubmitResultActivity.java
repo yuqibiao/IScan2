@@ -197,13 +197,11 @@ public class SubmitResultActivity extends BaseActivity {
                 break;
         }
         if(!TextUtils.isEmpty(url)){
-            final String uid = UUID.randomUUID().toString();
+            final String uid = "123456789";//UUID.randomUUID().toString();
             MyApplication myApplication = (MyApplication)getApplication();
             Message message = new Message();
             XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
-
             message.setXdCompany(xdCompany);
-
             UserInfo userInfo = myApplication.getUserInfo();
             WashReceiveInfo washReceiveInfo = new WashReceiveInfo();
             washReceiveInfo.setUser(userInfo.getUser());

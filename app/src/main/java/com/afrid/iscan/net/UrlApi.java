@@ -13,7 +13,9 @@ import retrofit2.http.POST;
  */
 public interface UrlApi {
 
-    public static final String BASE_URL ="http://192.168.1.108:8080/SwingUserver/service-provider/app";//"http://fangkalaundryapptest.chinacloudsites.cn/service-provider/app";
+    //"http://fangkalaundryapptest.chinacloudsites.cn/service-provider/app";
+    //http://fangkaapp.chinacloudsites.cn/service-provider/app
+    public static final String BASE_URL ="http://192.168.1.108:8080/SwingUserver/service-provider/app";
 
     /**
      * 登录
@@ -44,5 +46,14 @@ public interface UrlApi {
      * Return wash receive
      */
     public static final String RETURN_WASH_RECEIVE = BASE_URL + "/return-wash-receive";
+
+    public static final String BARCODE_TAGS_INFO = BASE_URL + "/barcode-tags-info";
+
+    /**
+     * Clean linen departure
+     */
+    public static final String CLEAN_LINEN_DEPARTURE = BASE_URL + "/clean-linen-departure";
+
+
 
 }

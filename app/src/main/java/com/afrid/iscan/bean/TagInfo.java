@@ -1,6 +1,8 @@
 package com.afrid.iscan.bean;
 
-public class TagInfo {
+import java.io.Serializable;
+
+public class TagInfo  implements Serializable{
 	private String tid;
 	private String objID;
 	private String objName;
@@ -10,10 +12,12 @@ public class TagInfo {
 	private String specialWashPrice;
 	private String returnWashPrice;
 	private String washTimes;
-	private String businessType;	//
+	private String businessType;	// 0����ͨ��1������
 	private String xdDataDetailID;	// �ӱ�ID
 	private String date;
 	private String deptPrimaryKey;
+	private String barCode;
+	
 
 	public TagInfo() {
 	}
@@ -113,11 +117,20 @@ public class TagInfo {
 		return date;
 	}
 	
+	
 	public void setDeptPrimaryKey(final String deptPrimaryKey) {
 		this.deptPrimaryKey = deptPrimaryKey;
 	}
 	public String getDeptPrimaryKey() {
 		return deptPrimaryKey;
+	}
+	
+	
+	public void setBarCode(final String barCode) {
+		this.barCode = barCode;
+	}
+	public String getBarCode() {
+		return barCode;
 	}
 }
 
