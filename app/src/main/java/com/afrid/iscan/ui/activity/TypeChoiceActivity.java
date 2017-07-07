@@ -69,13 +69,16 @@ public class TypeChoiceActivity extends BaseActivity {
         switch (view.getId()) {
             //---TODO 判断设备是否连接成功
             case R.id.btn_normal:
-                LinenScanActivity.startAction(this , hos , dept,0 );
+                LinenScanActivity2.startAction(this , hos , dept,0 );
+                //LinenScanActivity.startAction(this , hos , dept,0 );
                 break;
             case R.id.btn_special:
-                LinenScanActivity.startAction(this , hos , dept,1 );
+                LinenScanActivity2.startAction(this , hos , dept,1 );
+                //LinenScanActivity.startAction(this , hos , dept,1 );
                 break;
             case R.id.btn_return:
-                LinenScanActivity.startAction(this , hos , dept,2);
+                LinenScanActivity2.startAction(this , hos , dept,2 );
+                //LinenScanActivity.startAction(this , hos , dept,2);
                 break;
             case R.id.btn_stop:
                 break;
