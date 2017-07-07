@@ -15,7 +15,8 @@ public interface UrlApi {
 
     //"http://fangkalaundryapptest.chinacloudsites.cn/service-provider/app";
     //http://fangkaapp.chinacloudsites.cn/service-provider/app
-    public static final String BASE_URL ="http://192.168.1.108:8080/SwingUserver/service-provider/app";
+    //http://192.168.1.108:8080/SwingUserver/service-provider/app
+    public static final String BASE_URL ="http://fangkaapp.chinacloudsites.cn/service-provider/app";
 
     /**
      * 登录

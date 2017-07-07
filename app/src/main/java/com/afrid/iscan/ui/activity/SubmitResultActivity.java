@@ -200,7 +200,7 @@ public class SubmitResultActivity extends BaseActivity {
             final String uid = "123456789";//UUID.randomUUID().toString();
             MyApplication myApplication = (MyApplication)getApplication();
             Message message = new Message();
-            XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
+            final XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
             message.setXdCompany(xdCompany);
             UserInfo userInfo = myApplication.getUserInfo();
             WashReceiveInfo washReceiveInfo = new WashReceiveInfo();
@@ -227,7 +227,7 @@ public class SubmitResultActivity extends BaseActivity {
                             StringBuffer sbPrint  = new StringBuffer();
                             sbPrint.append("\r\n");
                             sbPrint.append("\r\n");
-                            sbPrint.append("明杰租赁\r\n"+"-----------------------------------\r\n");
+                            sbPrint.append(xdCompany.getName()+"\r\n"+"-----------------------------------\r\n");
                             sbPrint.append("\r\n");
                             sbPrint.append("酒店："+hospital+"\r\n");
                             sbPrint.append("部门："+dept+"\r\n");
