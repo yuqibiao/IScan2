@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "E:\\workswpace\\android\\IScan2\\libzxing\\build\\intermediates\\res\\merged\\debug\\layout\\toobar.xml",
+        "source": "E:\\workswpace\\android\\IScan2\\libzxing\\src\\main\\res\\layout\\toobar.xml"
+    },
+    {
+        "merged": "E:\\workswpace\\android\\IScan2\\libzxing\\build\\intermediates\\res\\merged\\debug\\layout\\activity_capture.xml",
+        "source": "E:\\workswpace\\android\\IScan2\\libzxing\\src\\main\\res\\layout\\activity_capture.xml"
+    }
+]

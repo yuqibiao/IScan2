@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.afrid.iscan.R;
 import com.afrid.swingu.utils.SwingUManager;
 import com.yyyu.baselibrary.utils.MyLog;
+import com.yyyu.baselibrary.view.WhewView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,6 +36,8 @@ public class LinenScanActivity2 extends BaseActivity {
     TextView tvDepartment;
     @BindView(R.id.tv_linen_type)
     TextView tvLinenType;
+    @BindView(R.id.wv_scan)
+     WhewView wvScan;
 
     private static final String TAG = "LinenScanActivity";
 
@@ -62,17 +65,17 @@ public class LinenScanActivity2 extends BaseActivity {
 
     @Override
     protected void initView() {
-        tvHospital.setText("您所在的酒店是：" + hospital);
-        tvDepartment.setText("要收布草的部门为：" + dept);
+        tvHospital.setText(resourceUtils.getStr(R.string.type_level1) + hospital);
+        tvDepartment.setText(resourceUtils.getStr(R.string.type_level2)  + dept);
         switch (linenType) {
             case 0:
-                tvLinenType.setText("收货类型为：正常布草");
+                tvLinenType.setText(resourceUtils.getStr(R.string.scan_linen_type_normal));
                 break;
             case 1:
-                tvLinenType.setText("收货类型为：特殊布草");
+                tvLinenType.setText(resourceUtils.getStr(R.string.scan_linen_type_special));
                 break;
             case 2:
-                tvLinenType.setText("收货类型为：返厂布草");
+                tvLinenType.setText(resourceUtils.getStr(R.string.scan_linen_type_return));
                 break;
         }
     }
@@ -94,12 +97,13 @@ public class LinenScanActivity2 extends BaseActivity {
     public void start(View view) {
         swingUManager.resetReader();
         swingUManager.startReader();
-
+        wvScan.start();
     }
 
     @OnClick(R.id.btn_stop)
     public void stop(View view) {
         swingUManager.stopReader();
+        wvScan.stop();
         Iterator<String> iterator = tags.iterator();
         while (iterator.hasNext()) {
             tagList.add(iterator.next());

@@ -2,15 +2,16 @@ package com.afrid.iscan.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
@@ -24,11 +25,15 @@ import com.afrid.iscan.gobal.Constant;
 import com.afrid.iscan.ui.fragment.DepartmentsChoiceFragment;
 import com.afrid.iscan.ui.fragment.PlaceOrderFragment;
 import com.afrid.swingu.utils.SwingUManager;
+import com.sunmi.adapter.SunmiScanManager;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 import com.yyyu.baselibrary.utils.ActivityHolder;
 import com.yyyu.baselibrary.utils.MySPUtils;
 import com.yyyu.baselibrary.utils.MyToast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -49,10 +54,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private UserInfo userInfo;
 
     private static final int PLACE_ORDER =0;
+    private SunmiScanManager sunmiScanManager;
 
     @Override
     public void beforeInit() {
+        super.beforeInit();
         userInfo = (UserInfo) getIntent().getSerializableExtra(Constant.USER_INFO);
+        sunmiScanManager = SunmiScanManager.getInstance();
         ((MyApplication)getApplication()).setUserInfo(userInfo);
     }
 
@@ -110,13 +118,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id== R.id.nav_home){//首页
-            toolbar.setTitle("布草管理系统");
+            toolbar.setTitle(resourceUtils.getStr(R.string.main_tb_title_manager));
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction ft = fragmentManager.beginTransaction();
             ft.replace(R.id.fl_content , new DepartmentsChoiceFragment());
             ft.commit();
         }else if(id == R.id.nav_place_order){//下单
-            palceOrder();
+            placeOrder();
         }
         else if (id == R.id.nav_bt) {//设备链接
             BTDeviceScanActivity.startAction(this);
@@ -132,26 +140,37 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PLACE_ORDER && resultCode == RESULT_OK){
-            String result = data.getStringExtra("result");
-            //MyToast.showShort(this , "result-----"+result);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            List<Fragment> fragmentList = fragmentManager.getFragments();
-            for (Fragment fragment:fragmentList) {
-                if(fragment instanceof PlaceOrderFragment){
-                    ((PlaceOrderFragment)fragment).setOrderData(result);
+            if (requestCode == SunmiScanManager.START_SCAN && data != null) {
+                Bundle bundle = data.getExtras();
+                ArrayList<HashMap<String, String>> result = (ArrayList<HashMap<String, String>>) bundle.getSerializable("data");
+                Iterator<HashMap<String, String>> it = result.iterator();
+                while (it.hasNext()) {
+                    HashMap<String, String> hashMap = it.next();
+                    Log.i("sunmi", hashMap.get("TYPE"));//这个是扫码的类型
+                    Log.i("sunmi", hashMap.get("VALUE"));//这个是扫码的结果
+                    //MyToast.showShort(this , "result-----"+result);
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    List<Fragment> fragmentList = fragmentManager.getFragments();
+                    for (Fragment fragment:fragmentList) {
+                        if(fragment instanceof PlaceOrderFragment){
+                            ((PlaceOrderFragment)fragment).setOrderData(hashMap.get("VALUE"));
+                        }
+                    }
                 }
+
             }
         }
     }
 
-    public void palceOrder(){
-        toolbar.setTitle("下单");
+    public void placeOrder(){
+        toolbar.setTitle(resourceUtils.getStr(R.string.main_tb_title_place_order));
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.fl_content , new PlaceOrderFragment());
         ft.commit();
-        Intent intent = new Intent(this , CaptureActivity.class);
-        startActivityForResult(intent , PLACE_ORDER);
+      /*  Intent intent = new Intent(this , CaptureActivity.class);
+        startActivityForResult(intent , PLACE_ORDER);*/
+        sunmiScanManager.toScanAtcForResult(this);
     }
 
     public static void startAction(Activity activity , UserInfo userInfo){
@@ -163,7 +182,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SwingUManager.getInstance(this).destoryReader();
+        SwingUManager.getInstance(this).destroyReader();
         BTPrinterManager.getInstance(this).onDestoryPrinter();
     }
 
@@ -175,7 +194,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             drawer.closeDrawer(GravityCompat.START);
         }else{
             if (System.currentTimeMillis() - currentTime > 2 * 1000) {
-                MyToast.showShort(this, "再按一次退出系统");
+                MyToast.showShort(this, resourceUtils.getStr(R.string.main_exit_tip));
             } else {
                 super.onBackPressed();
             }

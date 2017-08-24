@@ -17,7 +17,6 @@ import android.widget.ListView;
 import com.afrid.btprinter.BTPrinterManager;
 import com.afrid.iscan.R;
 import com.afrid.iscan.adapter.DeviceAdapter;
-import com.afrid.iscan.ui.activity.BaseActivity;
 import com.afrid.iscan.utils.bt.BTManager;
 import com.afrid.swingu.utils.SwingUManager;
 import com.yyyu.baselibrary.utils.MyLog;
@@ -100,11 +99,10 @@ public class BTDeviceScanActivity extends BaseActivity {
      */
     @OnClick(R.id.btn_start)
     public void startScan() {
-        if (btPrinterManager.isConnected() && swingUManager.isConncted()) {
-            MyToast.showShort(this, "设备已经连接了，快去使用吧！");
+        if (btPrinterManager.isConnected() && swingUManager.isConnected()) {
+            MyToast.showShort(this, resourceUtils.getStr(R.string.device_connected));
             return;
         }
-        MyLog.e("=====start");
         btDeviceAdapter.clear();
         btManager.toSysBTActivity(this);
         //checkPermissions();

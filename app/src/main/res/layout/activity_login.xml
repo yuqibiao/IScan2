@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:hint="工厂名"
+        android:hint="@string/hint_factory"
         android:text=""
         android:inputType="text" />
 
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:text=""
-        android:hint="用户名"
+        android:hint="@string/hint_username"
         android:inputType="text" />
 
     <EditText
@@ -34,7 +34,7 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:text=""
-        android:hint="密码"
+        android:hint="@string/hint_pwd"
         android:inputType="textPassword" />
 
     <Button
@@ -42,5 +42,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="登录" />
+        android:text="@string/hint_login_btn" />
 </LinearLayout>

@@ -6,8 +6,8 @@
 
     <application
         android:name=".MyApplication"
-        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activity.MainActivity"
@@ -22,23 +22,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.activity.BTDeviceScanActivity"/>
-        <activity android:name=".ui.activity.ConnectSuccessActivity"/>
-        <activity android:name=".ui.activity.LinenScanActivity"/>
-        <activity android:name=".ui.activity.LinenScanActivity2"/>
-        <activity android:name=".ui.activity.TypeChoiceActivity"/>
-        <activity android:name=".ui.activity.SubmitResultActivity"/>
+        <activity android:name=".ui.activity.BTDeviceScanActivity" />
+        <activity android:name=".ui.activity.ConnectSuccessActivity" />
+        <activity android:name=".ui.activity.LinenScanActivity" />
+        <activity android:name=".ui.activity.LinenScanActivity2" />
+        <activity android:name=".ui.activity.TypeChoiceActivity" />
+        <activity android:name=".ui.activity.SubmitResultActivity" />
         <!-- 蓝牙广播 -->
         <receiver
             android:name=".utils.bt.BTReceiver"
             android:exported="true">
             <intent-filter android:priority="10000">
+
                 <!-- 扫描时,发现蓝牙设备 -->
                 <action android:name="android.bluetooth.device.action.FOUND" />
             </intent-filter>
         </receiver>
 
+        <activity android:name=".ui.activity.TestActivity">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
     </application>
 
 </manifest>

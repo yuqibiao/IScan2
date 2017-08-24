@@ -68,11 +68,11 @@ public class LoginActivity extends BaseActivity {
         final String factoryName = etFactoryName.getText().toString();
 
         if(TextUtils.isEmpty(username) || TextUtils.isEmpty(pwd) || TextUtils.isEmpty(factoryName)){
-            MyToast.showShort(this , "输入存在空值！！");
+            MyToast.showShort(this , resourceUtils.getStr(R.string.lg_input_empty_tip));
             return;
         }
 
-        showLoadDialog("   登录中...   ");
+        showLoadDialog(resourceUtils.getStr(R.string.lg_loading_tip));
 
         final Gson gson = new Gson();
 
@@ -92,17 +92,17 @@ public class LoginActivity extends BaseActivity {
         new NetUtils().getData(UrlApi.LOGIN, params, new NetUtils.OnResultListener() {
             @Override
             public void onSuccess(String result) {
-                hidenLoadingDialog();
+                hiddenLoadingDialog();
                 MyLog.e(result);
                 Message msg = gson.fromJson(result , Message.class);
 
                 if(msg.getXdCompany()==null){
-                    MyToast.showLong(LoginActivity.this , "工厂名不正确！");
+                    MyToast.showLong(LoginActivity.this , resourceUtils.getStr(R.string.lg_factory_name_error));
                     return ;
                 }
                 OptUser user =gson.fromJson(msg.getJsonMessage() , OptUser.class);
                 if(user==null || TextUtils.isEmpty(user.getGroup())){
-                    MyToast.showLong(LoginActivity.this , "用户名或密码不正确！");
+                    MyToast.showLong(LoginActivity.this , resourceUtils.getStr(R.string.lg_username_or_pwd_error));
                     return;
                 }
 
@@ -117,8 +117,8 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onFailed(String error) {
-                MyToast.showLong(LoginActivity.this , "请检查你的网络！！");
-                hidenLoadingDialog();
+                MyToast.showLong(LoginActivity.this , resourceUtils.getStr(R.string.net_connect_error));
+                hiddenLoadingDialog();
             }
         });
     }

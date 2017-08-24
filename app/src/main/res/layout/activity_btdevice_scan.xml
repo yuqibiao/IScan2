@@ -10,10 +10,4 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.afrid.iscan.ui.activity.BTDeviceScanActivity">
 
-    <fragment
-        android:id="@+id/frg_device_scan"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.afrid.iscan.ui.fragment.BTDeviceScanFragment"/>
-
 </RelativeLayout>

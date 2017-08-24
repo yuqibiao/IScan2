@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="要收布草的部门为：" />
+        android:text="@string/type_level2" />
 
     <TextView
         android:id="@+id/tv_department"
@@ -31,26 +31,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="选择要扫描的布草类型:" />
+        android:text="@string/type_linen_type" />
 
     <Button
         android:id="@+id/btn_normal"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="正常布草" />
+        android:text="@string/type_normal_linen" />
 
     <Button
         android:id="@+id/btn_special"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="特殊洗涤" />
+        android:text="@string/type_special_linen" />
 
     <Button
         android:id="@+id/btn_return"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="返厂洗涤" />
+        android:text="@string/type_stop_scan" />
 
     <Button
         android:id="@+id/btn_stop"
@@ -58,5 +58,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:visibility="gone"
-        android:text="终止扫描" />
+        android:text="@string/type_stop_scan" />
 </LinearLayout>

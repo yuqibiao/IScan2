@@ -2,6 +2,7 @@ package com.afrid.iscan.utils;
 
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -101,11 +102,17 @@ public class NetUtils {
             mHandler.sendMessage(msg);
 
         }catch (Exception e) {
+            String errorTip = "";
             Message msg = new Message();
             msg.arg1 = ON_FAILED;
-            msg.obj = e.getMessage();
+            if(TextUtils.isEmpty(e.getMessage())){
+                errorTip="连接网络异常！！";
+            }else{
+                errorTip = e.getMessage();
+            }
+            msg.obj = errorTip;
             mHandler.sendMessage(msg);
-            Log.e(TAG, "httpPostTest: ========="+e.getMessage() );
+            Log.e(TAG, "NetUtils: ========="+e.getMessage() );
             e.printStackTrace();
         } finally {
             try {

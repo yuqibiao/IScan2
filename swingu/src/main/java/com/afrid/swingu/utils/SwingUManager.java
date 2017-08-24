@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import static com.afrid.swingu.utils.Constant.MESSAGE_BARCODE;
 import static com.afrid.swingu.utils.Constant.MESSAGE_TAG;
 
 /**
@@ -42,8 +43,15 @@ public class SwingUManager {
                 case MESSAGE_TAG:
                     byte[] readBuf = (byte[]) msg.obj;
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    if (mOnReadResultListener!=null){
+                    if (mOnReadResultListener != null) {
                         mOnReadResultListener.onRead(readMessage);
+                    }
+                    break;
+                case MESSAGE_BARCODE:
+                    byte[] readBuf_bar = (byte[]) msg.obj;
+                    String codeStr = new String(readBuf_bar, 0, msg.arg1);
+                    if (mOnScanResultListener != null) {
+                        mOnScanResultListener.onScan(codeStr);
                     }
                     break;
             }
@@ -53,7 +61,7 @@ public class SwingUManager {
     /**
      * 销毁时调用
      */
-    public void destoryReader() {
+    public void destroyReader() {
         mSwing.swing_setPower(0);
         if (mSwing != null) mSwing.stop();
     }
@@ -80,7 +88,7 @@ public class SwingUManager {
         mSwing.swing_readStart();
     }
 
-    public boolean isConncted(){
+    public boolean isConnected() {
         return mSwing.isConnected();
     }
 
@@ -97,14 +105,19 @@ public class SwingUManager {
 
     OnReadResultListener mOnReadResultListener;
 
-    public  void setOnReadResultListener(OnReadResultListener onReadResultListener){
+    public void setOnReadResultListener(OnReadResultListener onReadResultListener) {
         this.mOnReadResultListener = onReadResultListener;
     }
 
-    public  interface  OnReadResultListener{
-       void onRead(String tagId);
+    public interface OnReadResultListener {
+        void onRead(String tagId);
     }
 
+    OnScanResultListener mOnScanResultListener;
+
+    public interface OnScanResultListener {
+        void onScan(String code);
+    }
 
 
 }

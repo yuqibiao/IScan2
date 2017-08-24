@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/colorAccent"
-            android:text="无用标签数量：" />
+            android:text="" />
 
         <TextView
             android:id="@+id/tv_out_of_range"
@@ -44,7 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/colorAccent"
-            android:text="非本科室标签数量：" />
+            android:visibility="gone"
+            android:text="" />
 
         <TextView
             android:layout_width="match_parent"

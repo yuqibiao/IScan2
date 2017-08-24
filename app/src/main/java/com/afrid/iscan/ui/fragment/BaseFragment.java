@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+import com.yyyu.baselibrary.utils.ResourceUtils;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -25,6 +26,7 @@ public abstract class BaseFragment extends Fragment {
     protected Gson mGson;
     private View rootView;
     private Unbinder mUnbind;
+    protected ResourceUtils resourceUtils;
 
     @Nullable
     @Override
@@ -33,6 +35,7 @@ public abstract class BaseFragment extends Fragment {
         rootView = inflater.from(getActivity()).inflate(getLayoutId(), container, false);
         mUnbind = ButterKnife.bind(this, rootView);
         mGson = new Gson();
+        resourceUtils = ResourceUtils.getInstance(getContext());
         init();
         return rootView;
     }

@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.afrid.btprinter.BTPrinterManager;
 import com.afrid.iscan.R;
-import com.afrid.iscan.ui.activity.BaseActivity;
 import com.afrid.swingu.utils.SwingUManager;
 import com.yyyu.baselibrary.utils.MyToast;
 
@@ -45,7 +43,7 @@ public class TypeChoiceActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        tvHospital.setText("您所在的酒店是："+hos);
+        tvHospital.setText(resourceUtils.getStr(R.string.type_level1)+hos);
         tvDepartment.setText(""+dept);
     }
 
@@ -61,8 +59,8 @@ public class TypeChoiceActivity extends BaseActivity {
             BTDeviceScanActivity.startAction(this);
             return;
         }*/
-        if(!SwingUManager.getInstance(this).isConncted()){
-            MyToast.showShort(this , "手持机未链接！！");
+        if(!SwingUManager.getInstance(this).isConnected()){
+            MyToast.showShort(this , resourceUtils.getStr(R.string.device_swing_ui_disconnect));
             BTDeviceScanActivity.startAction(this);
             return;
         }

@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "E:\\workswpace\\android\\IScan2\\libzxing\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\qr_code_bg.9.png",
+        "source": "E:\\workswpace\\android\\IScan2\\libzxing\\src\\main\\res\\drawable-xhdpi\\qr_code_bg.9.png"
+    },
+    {
+        "merged": "E:\\workswpace\\android\\IScan2\\libzxing\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\scan_line.png",
+        "source": "E:\\workswpace\\android\\IScan2\\libzxing\\src\\main\\res\\drawable-xhdpi\\scan_line.png"
+    },
+    {
+        "merged": "E:\\workswpace\\android\\IScan2\\libzxing\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\icon_back.png",
+        "source": "E:\\workswpace\\android\\IScan2\\libzxing\\src\\main\\res\\drawable-xhdpi\\icon_back.png"
+    },
+    {
+        "merged": "E:\\workswpace\\android\\IScan2\\libzxing\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\shadow.png",
+        "source": "E:\\workswpace\\android\\IScan2\\libzxing\\src\\main\\res\\drawable-xhdpi\\shadow.png"
+    }
+]

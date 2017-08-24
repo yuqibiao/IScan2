@@ -7,6 +7,7 @@ import com.afrid.iscan.bean.HotelSource;
 import com.afrid.iscan.bean.SpOffice;
 import com.afrid.iscan.bean.XdSysUseArea;
 import com.afrid.iscan.bean.json.UserInfo;
+import com.sunmi.printerhelper.utils.AidlUtil;
 
 /**
  * 功能：自定义Application
@@ -28,6 +29,7 @@ public class MyApplication extends Application{
     public void onCreate() {
         super.onCreate();
         BTPrinterManager.getInstance(getApplicationContext()).initPrint(this);
+        AidlUtil.getInstance().connectPrinterService(this);
     }
 
     public UserInfo getUserInfo() {

@@ -1,14 +1,13 @@
 package com.afrid.iscan.ui.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -23,24 +22,23 @@ import com.afrid.iscan.bean.WashReceiveInfo;
 import com.afrid.iscan.bean.XdCompany;
 import com.afrid.iscan.bean.json.UserInfo;
 import com.afrid.iscan.net.UrlApi;
-import com.afrid.iscan.ui.activity.BaseActivity;
 import com.afrid.iscan.utils.NetUtils;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sunmi.adapter.SunmiPrintManager;
 import com.yyyu.baselibrary.utils.MyLog;
 import com.yyyu.baselibrary.utils.MyToast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.TimeZone;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * 功能：提交扫描结果
@@ -82,7 +80,9 @@ public class SubmitResultActivity extends BaseActivity {
     private String hospital;
     private int linenType;
     private String dept;
-    private BTPrinterManager btPrinterManager;
+    //private BTPrinterManager btPrinterManager;
+    private SunmiPrintManager btPrinterManager;
+
 
     @Override
     public int getLayoutId() {
@@ -96,23 +96,23 @@ public class SubmitResultActivity extends BaseActivity {
         hospital = getIntent().getStringExtra("hospital");
         linenType = getIntent().getIntExtra("linenType", -1);
         container = new HashMap<>();
-        btPrinterManager = BTPrinterManager.getInstance(SubmitResultActivity.this);
+        btPrinterManager = SunmiPrintManager.getInstance();
     }
 
     @Override
     protected void initView() {
-        tvHospital.setText("您所在的酒店是："+hospital);
-        tvDepartment.setText("要收布草的部门为："+dept);
-        tvLinenType.setText("收货类型为："+linenType);
+        tvHospital.setText(resourceUtils.getStr(R.string.type_level1)+hospital);
+        tvDepartment.setText(resourceUtils.getStr(R.string.type_level2)+dept);
+        tvLinenType.setText(resourceUtils.getStr(R.string.scan_linen_type)+linenType);
         switch (linenType) {
             case 0:
-                tvLinenType.setText("收货类型为：正常布草" );
+                tvLinenType.setText(resourceUtils.getStr(R.string.scan_linen_type_normal));
                 break;
             case 1:
-                tvLinenType.setText("收货类型为：特殊布草" );
+                tvLinenType.setText(resourceUtils.getStr(R.string.scan_linen_type_special));
                 break;
             case 2:
-                tvLinenType.setText("收货类型为：返厂布草" );
+                tvLinenType.setText(resourceUtils.getStr(R.string.scan_linen_type_return));
                 break;
         }
         rvOrder.setLayoutManager(new LinearLayoutManager(this));
@@ -128,7 +128,7 @@ public class SubmitResultActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        showLoadDialog("数据加载中....");
+        showLoadDialog(resourceUtils.getStr(R.string.loading_data_from_net));
         Message message = new Message();
         XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
         message.setJsonMessage(mGson.toJson(tagList));
@@ -143,14 +143,18 @@ public class SubmitResultActivity extends BaseActivity {
                 List<TagInfo> tagInfoList = mGson.fromJson(result, tagListToken.getType());
                 MyLog.e(TAG, "tagInfoList==" + tagInfoList.size());
                 for (TagInfo tagInfo : tagInfoList) {
-                    if (tagInfo.getOrgName().equals(hospital)) {//---只留所选医院的标签
+                   /* if (tagInfo.getOrgName().equals(hospital)) {//---只留所选医院的标签
                         if (!container.containsKey(tagInfo.getObjName())) {
                             container.put(tagInfo.getObjName(), new ArrayList<TagInfo>());
                         }
                         container.get(tagInfo.getObjName()).add(tagInfo);
                     }else{//---其他医院/未识别 标签
                         outOfRangeTagList.add(tagInfo);
+                    }*/
+                    if (!container.containsKey(tagInfo.getObjName())) {
+                        container.put(tagInfo.getObjName(), new ArrayList<TagInfo>());
                     }
+                    container.get(tagInfo.getObjName()).add(tagInfo);
                 }
                 mData = new ArrayList<>();
                 Iterator iterator = container.entrySet().iterator();
@@ -160,22 +164,32 @@ public class SubmitResultActivity extends BaseActivity {
                     int tagNum = entry.getValue().size();
                     mData.add(new ScanResult(tagName, tagNum));
                 }
-                hidenLoadingDialog();
+                hiddenLoadingDialog();
                 adapter.setmData(mData);
-                tvUselessTag.setText("无用标签的数量有："+(tagList.size()-tagInfoList.size())+"个");
-                tvOutOfRange.setText("非本酒店的标签数为："+outOfRangeTagList.size()+"个");
+                tvUselessTag.setText(resourceUtils.getStr(R.string.useless_tag)+(tagList.size()-tagInfoList.size()));
+                tvOutOfRange.setText(resourceUtils.getStr(R.string.out_of_range_tag)+outOfRangeTagList.size());
             }
 
             @Override
             public void onFailed(String error) {
                 MyToast.showShort(SubmitResultActivity.this , error);
-                hidenLoadingDialog();
+                hiddenLoadingDialog();
             }
         });
     }
 
     @OnClick(R.id.btn_submit)
-    public void operate(View view) {
+    public void operate(View view) {//-----确认收货
+
+      /*  if(!BTPrinterManager.getInstance(this).isConnected()){//判断打印机是否连接
+            MyToast.showLong(this , resourceUtils.getStr(R.string.device_print_disconnect));
+            BTDeviceScanActivity.startAction(this);
+            return;
+        }*/
+        if(!SunmiPrintManager.getInstance().isConnect()){//判断打印机是否连接
+            MyToast.showLong(this , resourceUtils.getStr(R.string.device_print_disconnect));
+        }
+
         btnSubmit.setEnabled(false);
         //---得到选中的
         List<String> checkedList = adapter.getCheckedPosition();
@@ -202,7 +216,7 @@ public class SubmitResultActivity extends BaseActivity {
             Message message = new Message();
             final XdCompany xdCompany = ((MyApplication) getApplication()).getUserInfo().getXdCompany();
             message.setXdCompany(xdCompany);
-            UserInfo userInfo = myApplication.getUserInfo();
+            final UserInfo userInfo = myApplication.getUserInfo();
             WashReceiveInfo washReceiveInfo = new WashReceiveInfo();
             washReceiveInfo.setUser(userInfo.getUser());
             washReceiveInfo.setArea(myApplication.getArea());
@@ -222,26 +236,47 @@ public class SubmitResultActivity extends BaseActivity {
                     MyLog.e(TAG , "result"+result);
                     if(result.equals("1")){
                         //打印条码
+                        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        TimeZone TIME_ZONE = TimeZone.getTimeZone("Asia/Shanghai");
+                        DATE_FORMAT.setTimeZone(TIME_ZONE);
+                        String date = DATE_FORMAT.format(Calendar.getInstance(TIME_ZONE).getTime());
                         for (int i=0 ; i<2 ; i++){
+                            btPrinterManager.printText(resourceUtils.getStr(R.string.submit_order)+"");
+                            btPrinterManager.printText(resourceUtils.getStr(R.string.submit_date) + date + "");
                             btPrinterManager.printOne(uid);
                             StringBuffer sbPrint  = new StringBuffer();
+                            switch (linenType) {//-----打印布草类型
+                                case 0:
+                                    sbPrint.append(resourceUtils.getStr(R.string.scan_linen_type_normal)+"\r\n");
+                                    break;
+                                case 1:
+                                    sbPrint.append(resourceUtils.getStr(R.string.scan_linen_type_special)+"\r\n");
+                                    break;
+                                case 2:
+                                    sbPrint.append(resourceUtils.getStr(R.string.scan_linen_type_return)+"\r\n");
+                                    break;
+                            }
+                            sbPrint.append("\r\n");
+                            sbPrint.append(xdCompany.getName()+"\r\n"+"--------------------------------\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append(resourceUtils.getStr(R.string.submit_user)+userInfo.getUser().getName());
                             sbPrint.append("\r\n");
                             sbPrint.append("\r\n");
-                            sbPrint.append(xdCompany.getName()+"\r\n"+"-----------------------------------\r\n");
-                            sbPrint.append("\r\n");
-                            sbPrint.append("酒店："+hospital+"\r\n");
-                            sbPrint.append("部门："+dept+"\r\n");
+                            sbPrint.append(resourceUtils.getStr(R.string.submit_level1)+hospital+"\r\n");
+                            sbPrint.append(resourceUtils.getStr(R.string.submit_level2)+dept+"\r\n");
                             sbPrint.append("\r\n");
                             for (ScanResult scanResult :mData ) {
-                                sbPrint.append("类别："+scanResult.getTagName()+"--------数量："+scanResult.getTagNum()+"\r\n");
+                                sbPrint.append(resourceUtils.getStr(R.string.submit_type)+scanResult.getTagName()+"--------"+resourceUtils.getStr(R.string.submit_num)+scanResult.getTagNum()+"\r\n");
                             }
                             sbPrint.append("\r\n");
                             sbPrint.append("\r\n");
                             sbPrint.append("\r\n");
                             sbPrint.append("\r\n");
-                            sbPrint.append("收发人员签字________________________");
+                            sbPrint.append(resourceUtils.getStr(R.string.submit_customer_sign));
                             sbPrint.append("\r\n");
-                            sbPrint.append("--www.arfid.co(阿菲德洗涤系统)--"+"\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append("\r\n");
+                            sbPrint.append(resourceUtils.getStr(R.string.submit_arfid)+"\r\n");
                             sbPrint.append("\r\n");
                             sbPrint.append("\r\n");
                             sbPrint.append("\r\n");
@@ -249,9 +284,25 @@ public class SubmitResultActivity extends BaseActivity {
 
                             btPrinterManager.printText(sbPrint.toString());
                         }
-                        finish();
+                        AlertDialog alertDialog = new AlertDialog.Builder(SubmitResultActivity.this)
+                                .setCancelable(false)
+                                .setTitle(resourceUtils.getStr(R.string.submit_alter_title))
+                                .setMessage(resourceUtils.getStr(R.string.submit_alter_msg))
+                                .setPositiveButton(resourceUtils.getStr(R.string.submit_alter_pos), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        finish();
+                                    }
+                                })
+                              /*  .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                    }
+                                })*/
+                                .create();
+                        alertDialog.show();
                     }else{
-                        MyToast.showShort(SubmitResultActivity.this , "内部错误，请重新提交");
+                        MyToast.showShort(SubmitResultActivity.this , resourceUtils.getStr(R.string.submit_error));
                         btnSubmit.setEnabled(true);
                     }
                 }

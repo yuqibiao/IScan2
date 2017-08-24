@@ -12,6 +12,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.yyyu.baselibrary.utils.ActivityHolder;
+import com.yyyu.baselibrary.utils.ResourceUtils;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -30,6 +31,7 @@ public  abstract  class BaseActivity extends AppCompatActivity {
     protected Gson mGson;
     private Unbinder mUnbind;
     private KProgressHUD loadingDialog;
+    protected ResourceUtils resourceUtils;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public  abstract  class BaseActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         mUnbind = ButterKnife.bind(this);
         mGson = new Gson();
+        resourceUtils = ResourceUtils.getInstance(getApplicationContext());
         init();
     }
 
@@ -62,6 +65,7 @@ public  abstract  class BaseActivity extends AppCompatActivity {
     public abstract  int getLayoutId();
 
     public void beforeInit() {
+
     }
 
     /**
@@ -103,7 +107,7 @@ public  abstract  class BaseActivity extends AppCompatActivity {
                 .show();
     }
 
-    protected  void hidenLoadingDialog(){
+    protected  void hiddenLoadingDialog(){
         loadingDialog.dismiss();
     }
 
